@@ -4,6 +4,7 @@ import { getSupabaseClient } from './lib/utils'
 
 declare module 'next-auth' {
   interface Session {
+    accessToken: string,
     user: {
       /** The user's id. */
       id: string
@@ -11,8 +12,7 @@ declare module 'next-auth' {
   }
 }
 
-// enable anon user creation
-// https://www.lightenna.com/tech/2023/use-nextauth-with-nextjs-app-router-for-anonymous-logins/
+
 export const {
   handlers: { GET, POST },
   auth
@@ -24,7 +24,7 @@ export const {
     })
   ],
   callbacks: {
-    async signIn({ account, profile }) {
+    async signIn({ user, account, profile }) {
       if (profile) {
         const supabase = getSupabaseClient()
         const { data: user, error } = await supabase
@@ -64,9 +64,23 @@ export const {
           .limit(1)
           .single()
 
-        if(error)  console.log('error fetching user', error)
-        
+        if(error) console.log('error fetching user', error)
+
+        // generate api jwt token to session
+        const response = await fetch(`${process.env.API_URL}/generate-token`,{
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: data.email,
+            name: data.name
+          })
+        })
+
+        const {data: apiData} = await response.json()
         token.id = data.id
+        token.accessToken = apiData.token
       }
 
       return token
@@ -74,6 +88,7 @@ export const {
     session: ({ session, token }) => {
       if (session?.user && token?.id) {
         session.user.id = String(token.id)
+        session.accessToken = token.accessToken as string
       }
       return session
     },

@@ -9,6 +9,7 @@ import { EmptyScreen } from '@/components/empty-screen'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -23,11 +24,15 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       initialMessages,
       id,
       body: {
-        id,
+        id
       },
       onResponse(response) {
         if (response.status === 401) {
           toast.error(response.statusText)
+          signOut({
+            redirect: true,
+            callbackUrl: '/sign-in'
+          })
         }
       },
       onFinish() {

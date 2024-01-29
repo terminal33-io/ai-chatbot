@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   const { messages } = json
   const message = messages[messages.length - 1].content
   const userId = (await auth())?.user?.id
+  const accessToken = (await auth())?.accessToken
   const model = 'gpt-4-1106-preview'
   const version = '1.0.0'
   const source = 'webapp'
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
     const response = await fetch(`${apiUrl}/chat`, {
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
         'X-SECRET': secret,
       },
       method: 'POST',
@@ -35,7 +37,11 @@ export async function POST(req: Request) {
       })
     })
 
-
+    if([400,401,403].includes(response.status)) {
+      return new Response('Unauthorized', {
+        status: 401
+      })
+    }
 
     if (!response.ok) {
       return new Response('Error', {
@@ -64,7 +70,6 @@ export async function POST(req: Request) {
           ],
           additional_info: {
             model,
-            temperature,
             version,
             source
           }

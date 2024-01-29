@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   const version = '1.0.0'
   const source = 'webapp'
 
-  if (!userId) {
+  if (!userId || !accessToken) {
     return new Response('Unauthorized', {
       status: 401
     })

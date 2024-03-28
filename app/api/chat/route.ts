@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const response = await fetch(`${apiUrl}`, {
+    const response = await fetch(`${apiUrl}/chat`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,

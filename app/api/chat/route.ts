@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const message = messages[messages.length - 1].content
   const userId = (await auth())?.user?.id
   const accessToken = (await auth())?.accessToken
-  const model = 'gpt-4-1106-preview'
+  const model = 'gpt-4-0125-preview'
   const version = '1.0.0'
   const source = 'webapp'
 
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const response = await fetch(`${apiUrl}/chat/db`, {
+    const response = await fetch(`${apiUrl}`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,

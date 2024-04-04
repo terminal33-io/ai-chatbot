@@ -2,7 +2,7 @@ import { AIStream, StreamingTextResponse } from 'ai'
 import { auth } from '@/auth'
 import { getSupabaseClient, nanoid } from '@/lib/utils'
 
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 const apiUrl = process.env.API_URL
 const secret = process.env.APP_SECRET as string

@@ -3,6 +3,7 @@ import { auth } from '@/auth'
 import { getSupabaseClient, nanoid } from '@/lib/utils'
 
 // export const runtime = 'edge'
+export const maxDuration = 300
 
 const apiUrl = process.env.API_URL
 const secret = process.env.APP_SECRET as string

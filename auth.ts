@@ -78,6 +78,7 @@ export const {
           })
         })
 
+
         const {data: apiData} = await response.json()
         token.id = data.id
         token.accessToken = apiData.token

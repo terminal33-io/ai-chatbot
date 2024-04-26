@@ -89,7 +89,7 @@ export function Header() {
           <span className="hidden sm:block">Deploy to Vercel</span>
           <span className="sm:hidden">Deploy</span>
         </a> */}
-      <DropdownMenu>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" className="pl-0">
             <span className="pl-4">GPT 4</span> <IconChevronUpDown className='inline'/>
@@ -106,7 +106,7 @@ export function Header() {
             <div className="text-xs text-zinc-500">Great for system related questions.</div>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
       </div>
     </header>
   )

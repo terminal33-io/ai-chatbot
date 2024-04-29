@@ -30,10 +30,10 @@ export function ChatMessage({
             'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
             message.role === 'user'
               ? 'bg-background'
-              : 'border-0 text-primary-foreground bg-[#0756A5]'
+              : 'border-0 text-primary-foreground'
           )}
         >
-          {message.role === 'user' ? <IconUser /> : <Image src="/gc_icon.svg" width="26" height="25" alt="GC logo"/>}
+          {message.role === 'user' ? <IconUser /> : <Image src="/gc_icon.svg" width="32" height="32" alt="GC logo"/>}
         </div>
         <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
           <MemoizedReactMarkdown

@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     payload.data = data;
   }
 
-  console.log(payload)
+  // console.log(payload)
 
   try {
     const response = await fetch(`${apiUrl}/chat/db`, {

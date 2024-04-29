@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { type UseChatHelpers } from 'ai/react'
+import { Message, type UseChatHelpers } from 'ai/react'
 
 import { shareChat } from '@/app/actions'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,7 @@ import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconRefresh, IconShare, IconStop } from '@/components/ui/icons'
 import { FooterText } from '@/components/footer'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
+import { nanoid } from 'nanoid'
 
 export interface ChatPanelProps
   extends Pick<
@@ -88,9 +89,9 @@ export function ChatPanel({
           <PromptForm
             onSubmit={async value => {
               await append({
-                id,
                 content: value,
-                role: 'user'
+                role: 'user',
+                createdAt: new Date(),
               })
             }}
             input={input}

@@ -45,8 +45,8 @@ dependencies:
     specifier: ^0.5.20
     version: 0.5.20
   ai:
-    specifier: ^2.2.25
-    version: 2.2.25(react@18.2.0)(solid-js@1.8.6)(svelte@4.2.7)(vue@3.3.9)
+    specifier: ^2.2.37
+    version: 2.2.37(react@18.2.0)(solid-js@1.8.6)(svelte@4.2.7)(vue@3.3.9)
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -89,6 +89,9 @@ dependencies:
   react-intersection-observer:
     specifier: ^9.5.3
     version: 9.5.3(react@18.2.0)
+  react-loading-skeleton:
+    specifier: ^3.4.0
+    version: 3.4.0(react@18.2.0)
   react-markdown:
     specifier: ^8.0.7
     version: 8.0.7(@types/react@18.2.38)(react@18.2.0)
@@ -1570,8 +1573,8 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@2.2.25(react@18.2.0)(solid-js@1.8.6)(svelte@4.2.7)(vue@3.3.9):
-    resolution: {integrity: sha512-iXu3pzPpDPBGDir8hz86FAJmJTynMfBH4V/DXyR3GGeaHOfjdrErlcMm862CSalR6PDMwDOSCQVwJqtdnvIncQ==}
+  /ai@2.2.37(react@18.2.0)(solid-js@1.8.6)(svelte@4.2.7)(vue@3.3.9):
+    resolution: {integrity: sha512-JIYm5N1muGVqBqWnvkt29FmXhESoO5TcDxw74OE41SsM+uIou6NPDDs0XWb/ABcd1gmp6k5zym64KWMPM2xm0A==}
     engines: {node: '>=14.6'}
     peerDependencies:
       react: ^18.2.0
@@ -4452,6 +4455,14 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+    dev: false
+
+  /react-loading-skeleton@3.4.0(react@18.2.0):
+    resolution: {integrity: sha512-1oJEBc9+wn7BbkQQk7YodlYEIjgeR+GrRjD+QXkVjwZN7LGIcAFHrx4NhT7UHGBxNY1+zax3c+Fo6XQM4R7CgA==}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-markdown@8.0.7(@types/react@18.2.38)(react@18.2.0):

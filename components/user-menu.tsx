@@ -28,7 +28,7 @@ export function UserMenu({ user }: UserMenuProps) {
     <div className="flex items-center justify-between">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="pl-0">
+          <Button variant="ghost" className="pl-0 hover:text-black">
             {user?.image ? (
               <Image
                 className="w-6 h-6 transition-opacity duration-300 rounded-full select-none ring-1 ring-zinc-100/10 hover:opacity-80"

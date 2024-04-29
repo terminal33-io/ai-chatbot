@@ -10,6 +10,7 @@ import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import Skeleton from 'react-loading-skeleton'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -23,6 +24,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     useChat({
       initialMessages,
       id,
+      sendExtraMessageFields: true,
       body: {
         id
       },
@@ -47,7 +49,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
-            <ChatList messages={messages} />
+            <ChatList messages={messages} isLoading={isLoading} append={append} />
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (

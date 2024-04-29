@@ -64,7 +64,7 @@ async function UserOrLogin() {
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between lg:justify-normal w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
+    <header className="bg-[#131533] text-white sticky top-0 z-50 flex items-center justify-between lg:justify-normal w-full h-16 px-4 border-b shrink-0 backdrop-blur-xl">
       <div className="flex items-center lg:w-[250px] xl:w-[300px]">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin />
@@ -89,7 +89,7 @@ export function Header() {
           <span className="hidden sm:block">Deploy to Vercel</span>
           <span className="sm:hidden">Deploy</span>
         </a> */}
-      <DropdownMenu>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" className="pl-0">
             <span className="pl-4">GPT 4</span> <IconChevronUpDown className='inline'/>
@@ -106,7 +106,7 @@ export function Header() {
             <div className="text-xs text-zinc-500">Great for system related questions.</div>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
       </div>
     </header>
   )

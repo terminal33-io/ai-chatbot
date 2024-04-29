@@ -1,3 +1,4 @@
+"use client"
 import { Message } from 'ai'
 
 import { Separator } from '@/components/ui/separator'
@@ -55,7 +56,7 @@ export function ChatList({ messages, isLoading, append }: ChatList) {
     role: 'assistant'
   }
 
-  console.log(latestUserMsg)
+  // console.log(latestUserMsg)
 
 
   return (

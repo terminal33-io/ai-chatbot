@@ -3,9 +3,10 @@ import { notFound } from 'next/navigation'
 
 import { formatDate } from '@/lib/utils'
 import { getSharedChat } from '@/app/actions'
-import { ChatList } from '@/components/chat-list'
 import { FooterText } from '@/components/footer'
-import { Chat } from '@/lib/types'
+import { ChatMessage } from '@/components/chat-message'
+
+import { Separator } from '@/components/ui/separator'
 
 interface SharePageProps {
   params: {
@@ -43,7 +44,16 @@ export default async function SharePage({ params }: SharePageProps) {
             </div>
           </div>
         </div>
-        <ChatList messages={chat.messages} />
+        <div className="relative mx-auto max-w-2xl px-4">
+          {chat.messages.map((message, index) => (
+            <div key={index}>
+              <ChatMessage message={message} />
+              {index < chat.messages.length - 1 && (
+                <Separator className="my-4 md:my-8" />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
       <FooterText className="py-8" />
     </>

@@ -4,13 +4,12 @@
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import { IconOpenAI, IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
-import { MessageActions } from './chat-list'
+import Image from 'next/image'
 
 export interface ChatMessageProps {
   message: Message
@@ -31,10 +30,10 @@ export function ChatMessage({
             'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
             message.role === 'user'
               ? 'bg-background'
-              : 'bg-primary text-primary-foreground'
+              : 'border-0 text-primary-foreground bg-[#0756A5]'
           )}
         >
-          {message.role === 'user' ? <IconUser /> : <IconOpenAI />}
+          {message.role === 'user' ? <IconUser /> : <Image src="/gc_icon.svg" width="26" height="25" alt="GC logo"/>}
         </div>
         <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
           <MemoizedReactMarkdown

@@ -12,7 +12,7 @@ export function SidebarToggle() {
   return (
     <Button
       variant="ghost"
-      className="-ml-2 hidden h-9 w-9 p-0 lg:flex"
+      className="-ml-2 hidden h-9 w-9 p-0 lg:flex hover:text-black"
       onClick={() => {
         toggleSidebar()
       }}

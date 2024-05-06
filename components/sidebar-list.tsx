@@ -2,6 +2,7 @@ import { clearChats, getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
+
 import { cache } from 'react'
 
 interface SidebarListProps {
@@ -18,7 +19,7 @@ export async function SidebarList({ userId }: SidebarListProps) {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto no-scrollbar">
         {chats?.length ? (
           <div className="space-y-2 px-2">
             <SidebarItems chats={chats} />

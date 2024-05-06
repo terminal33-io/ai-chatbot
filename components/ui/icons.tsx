@@ -509,6 +509,16 @@ function IconChevronUpDown({
   )
 }
 
+function IconDart({ className, ...props }: React.ComponentProps<'svg'>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className={cn('h-4 w-4', className)} {...props}>
+      <path
+        d="M8 1.25A6.758 6.758 0 0 0 1.25 8 6.758 6.758 0 0 0 8 14.75 6.758 6.758 0 0 0 14.75 8 6.758 6.758 0 0 0 8 1.25zm0 .5A6.257 6.257 0 0 1 14.25 8 6.257 6.257 0 0 1 8 14.25 6.257 6.257 0 0 1 1.75 8 6.257 6.257 0 0 1 8 1.75zm0 1.5A4.756 4.756 0 0 0 3.25 8 4.756 4.756 0 0 0 8 12.75 4.756 4.756 0 0 0 12.75 8 4.756 4.756 0 0 0 8 3.25zm0 .5A4.255 4.255 0 0 1 12.25 8 4.255 4.255 0 0 1 8 12.25 4.255 4.255 0 0 1 3.75 8 4.255 4.255 0 0 1 8 3.75zm0 1.5A2.752 2.752 0 0 0 5.25 8 2.752 2.752 0 0 0 8 10.75 2.752 2.752 0 0 0 10.75 8 2.752 2.752 0 0 0 8 5.25zm0 .5c1.241 0 2.25 1.01 2.25 2.25S9.241 10.25 8 10.25A2.253 2.253 0 0 1 5.75 8c0-1.24 1.009-2.25 2.25-2.25zm0 1.5a.75.75 0 0 0 0 1.5.75.75 0 0 0 0-1.5zm0 .5a.25.25 0 1 1 0 .5.25.25 0 0 1 0-.5z"
+      ></path>
+    </svg>
+  )
+}
+
 export {
   IconEdit,
   IconNextChat,
@@ -538,5 +548,6 @@ export {
   IconUsers,
   IconExternalLink,
   IconChevronUpDown,
-  IconApp
+  IconApp,
+  IconDart
 }

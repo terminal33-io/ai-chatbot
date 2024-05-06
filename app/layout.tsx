@@ -8,6 +8,7 @@ import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
 import { Analytics } from '@vercel/analytics/react';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 export const metadata = {

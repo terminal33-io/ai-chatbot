@@ -1,6 +1,7 @@
 import { AIStream, StreamingTextResponse } from 'ai'
 import { auth } from '@/auth'
 import { getSupabaseClient, nanoid } from '@/lib/utils'
+import { getSession } from '@/app/actions/session'
 
 // export const runtime = 'edge'
 export const maxDuration = 300
@@ -17,12 +18,13 @@ type ChatPayload = {
 }
 
 export async function POST(req: Request) {
+  const session = await getSession()
   const json = await req.json()
   const { messages } = json
   const userMessage = messages[messages.length - 1]
   const message = userMessage.content
-  const userId = (await auth())?.user?.id
-  const accessToken = (await auth())?.accessToken
+  const userId = session.user.id
+  const accessToken = session.accessToken
   const model = 'gpt-4-0125-preview'
   const version = '1.0.0'
   const source = 'webapp'

@@ -1,1 +1,0 @@
-alter table if exists chats add deleted_at timestamptz null;

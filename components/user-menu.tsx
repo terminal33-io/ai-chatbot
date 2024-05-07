@@ -2,7 +2,6 @@
 
 import Image from 'next/image'
 import { type Session } from 'next-auth'
-import { signOut } from 'next-auth/react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { IconExternalLink } from '@/components/ui/icons'
+import { logout } from '@/app/actions/session'
 
 export interface UserMenuProps {
   user: Session['user']
@@ -52,11 +51,9 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={() =>
-              signOut({
-                callbackUrl: '/'
-              })
-            }
+            onClick={ async()=> {
+              await logout()
+            }}
             className="text-xs"
           >
             Log Out

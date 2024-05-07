@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { cn } from '@/lib/utils'
 import { auth } from '@/auth'
-import { clearChats } from '@/app/actions'
+import { clearChats } from '@/app/actions/chat'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Sidebar } from '@/components/sidebar'
 import { SidebarList } from '@/components/sidebar-list'
@@ -30,9 +30,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { getSession, logout } from '@/app/actions/session'
 
 async function UserOrLogin() {
-  const session = await auth()
+  const session = await getSession()//await auth()
+
 
   return (
     <>
@@ -51,7 +53,7 @@ async function UserOrLogin() {
       <div className="flex items-center">
         <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
         {session?.user ? (
-          <UserMenu user={session.user} />
+          <UserMenu user={session.user}/>
         ) : (
           <Button variant="link" asChild className="-ml-2">
             <Link href="/sign-in?callbackUrl=/">Login</Link>

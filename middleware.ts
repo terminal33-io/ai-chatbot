@@ -13,5 +13,5 @@ export async function middleware(request: NextRequest) {
  
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: '/((?!sso|logout|jwt|_next/static|_next/image|favicon.ico).*)',
+  matcher: '/((?!sso|logout|jwt|api|_next/static|_next/image|favicon.ico).*)',
 }

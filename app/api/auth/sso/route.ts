@@ -4,8 +4,8 @@ import { cookies } from 'next/dist/client/components/headers'
 import { redirect } from 'next/navigation'
 import * as jose from 'jose'
 import { JwtPayload, SessionData, User } from '@/lib/types'
-import { createUser, getUser } from '@/lib/supabase'
 import { NextRequest } from 'next/server'
+import { createUser, getUser } from '@/app/actions/user'
 
 export async function GET(req: NextRequest) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
@@ -25,14 +25,12 @@ export async function GET(req: NextRequest) {
           location_name: payload.location_name
         }
       }
-      // console.log("payload", payload)
+      console.log("payload", payload)
       // get user
-      const { data: user, error } = await getUser(payload.username)
-      if (error) console.log('error fetching user', error)
+      let user = await getUser(payload.username)
 
       if (!user) {
-        const { data: user, error } = await createUser(userData)
-        if (error) console.log('error creating user', error)
+        user = await createUser(userData)
       }
 
       // generate access token

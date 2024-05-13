@@ -11,7 +11,7 @@ export async function getUser(username: string) {
     .single()
 
   if (error) {
-    console.log('Error getting chats: ', error)
+    console.log('User not found: ', error)
     return null
   }
 
@@ -21,7 +21,7 @@ export async function getUser(username: string) {
 export async function createUser(userData: NewUser) {
   const { data, error } = await supabase.from('users').insert(userData)
   if (error) {
-    console.log('Error getting chats: ', error)
+    console.log('Error creating new user: ', error)
     return null
   }
   return data

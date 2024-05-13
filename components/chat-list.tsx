@@ -8,14 +8,14 @@ import { useEffect, useState } from 'react'
 import { ChatSuggestions } from './chat-suggestions'
 
 export interface ChatList extends Pick<UseChatHelpers, 'isLoading' | 'append'> {
-  messages: Message[]
+  messages: Message[],
+  id?: string
 }
 
-export function ChatList({ messages, isLoading, append }: ChatList) {
+export function ChatList({ messages, isLoading, append, id }: ChatList) {
   const [latestUserMsg, setLatestUserMsg] = useState<Message | null>(null)
   const [latestBotMsg, setLatestBotMsg] = useState<Message | null>(null)
   const [incomingMsg, setIncomingMsg] = useState(false)
-  // const [showActions, setShowActions] = useState(true)
 
   // set latest User & AI message
   useEffect(() => {
@@ -34,6 +34,7 @@ export function ChatList({ messages, isLoading, append }: ChatList) {
   }, [messages, isLoading])
 
   // detect incoming bot message
+  // check messages length is change 
   useEffect(() => {
     if (messages.length > 1 && isLoading) {
       const botMessages = messages.filter(msg => msg.role == 'assistant')
@@ -68,6 +69,9 @@ export function ChatList({ messages, isLoading, append }: ChatList) {
             {index < messages.length - 1 && (
               <Separator className="my-4 md:my-8" />
             )}
+            {/* load suggestions for last message */}
+            {/* {!isLoading && index == messages.length-1 && <div>load suggestions</div>}
+            {isLoading && index == messages.length-1 && <div>loading...</div>} */}
           </div>
         ))}
 
@@ -84,6 +88,7 @@ export function ChatList({ messages, isLoading, append }: ChatList) {
           isLoading={incomingMsg || isLoading}
           message={latestUserMsg}
           append={append}
+          id={id}
         />
       )}
     </>

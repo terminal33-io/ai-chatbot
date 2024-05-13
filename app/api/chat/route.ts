@@ -1,5 +1,4 @@
 import { AIStream, StreamingTextResponse } from 'ai'
-import { auth } from '@/auth'
 import { getSupabaseClient, nanoid } from '@/lib/utils'
 import { getSession } from '@/app/actions/session'
 
@@ -23,8 +22,8 @@ export async function POST(req: Request) {
   const { messages } = json
   const userMessage = messages[messages.length - 1]
   const message = userMessage.content
-  const userId = session.user.id
-  const accessToken = session.accessToken
+  const userId = session?.user.id
+  const accessToken = session?.accessToken
   const model = 'gpt-4-0125-preview'
   const version = '1.0.0'
   const source = 'webapp'

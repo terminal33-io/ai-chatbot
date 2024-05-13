@@ -3,11 +3,11 @@ import * as jose from 'jose'
 
 export default async function Jwt() {
   const payload: JwtPayload = {
-    username: 'testuser',
-    name: 'Test User',
-    email: 'test@example.com',
-    location_id: 156,
-    location_name: 'Test Location'
+    username: 'mk',
+    name: 'MK',
+    email: 'mk@terminal33.io',
+    location_id: 1,
+    location_name: 'Fort Worth Advancement Foundation'
   }
 
   const secretKey = process.env.JWT_SECRET as string

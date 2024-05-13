@@ -48,10 +48,7 @@ export async function login(token: string) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          email: user.email,
-          name: user.name
-        })
+        body: JSON.stringify(user)
       })
 
       if (!response.ok) {
@@ -86,4 +83,5 @@ export async function login(token: string) {
 export async function logout() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
   session.destroy()
+  redirect('/logout')
 }

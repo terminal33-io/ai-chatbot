@@ -1,4 +1,3 @@
-import { sessionOptions } from '@/lib/session'
 import { getIronSession } from 'iron-session'
 import { cookies } from 'next/dist/client/components/headers'
 import { redirect } from 'next/navigation'
@@ -6,6 +5,7 @@ import * as jose from 'jose'
 import { JwtPayload, SessionData, User } from '@/lib/types'
 import { NextRequest } from 'next/server'
 import { createUser, getUser } from '@/app/actions/user'
+import { sessionOptions } from '@/lib/utils'
 
 export async function GET(req: NextRequest) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
@@ -61,8 +61,8 @@ export async function GET(req: NextRequest) {
         }
         await session.save()
       }
-    } catch (e) {
-      console.log(e)
+    } catch (e: any) {
+      // console.log(e)
       return new Response(`Error: ${e.message}`, {
         status: 500,
       })

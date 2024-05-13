@@ -7,6 +7,7 @@ import * as jose from 'jose'
 import { getSupabaseClient, sessionOptions } from '@/lib/utils'
 import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
 import { createUser, getUser } from './user'
+import { revalidatePath } from 'next/cache'
 
 
 
@@ -37,6 +38,7 @@ export async function login(token: string) {
     }
     // get user
     let user = await getUser(payload.username)
+    // console.log(user)
     if (!user) {
       user = await createUser(userData)
     }
@@ -48,7 +50,8 @@ export async function login(token: string) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(user)
+        body: JSON.stringify(user),
+        cache: 'no-store'
       })
 
       if (!response.ok) {
@@ -56,7 +59,6 @@ export async function login(token: string) {
       }
 
       const { data } = await response.json()
-
       // create new session
       const session = await getIronSession<SessionData>(
         cookies(),
@@ -75,6 +77,7 @@ export async function login(token: string) {
     } else {
       errorMessage = 'An unknown error occurred'
     }
+    revalidatePath("/sso")
     return { error: errorMessage }
   }
   redirect('/')

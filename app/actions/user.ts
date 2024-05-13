@@ -19,7 +19,7 @@ export async function getUser(username: string) {
 }
 
 export async function createUser(userData: NewUser) {
-  const { data, error } = await supabase.from('users').insert(userData)
+  const { data, error } = await supabase.from('users').insert(userData).select().single()
   if (error) {
     console.log('Error creating new user: ', error)
     return null

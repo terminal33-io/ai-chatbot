@@ -37,7 +37,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           })
         }
       },
-      onFinish() {
+      onFinish(message: Message) {
         if (!path.includes('chat')) {
           router.push(`/chat/${id}`, { shallow: true, scroll: false })
           router.refresh()
@@ -49,7 +49,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
-            <ChatList messages={messages} isLoading={isLoading} append={append} />
+            <ChatList messages={messages} isLoading={isLoading} append={append} id={id}/>
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (

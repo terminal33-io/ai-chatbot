@@ -1,1 +1,0 @@
-alter table if exists chats add additional_info jsonb null;

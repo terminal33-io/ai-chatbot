@@ -5,12 +5,12 @@ import { IconArrowRight } from '@/components/ui/icons'
 // set proper example messages
 const exampleMessages = [
   {
-    heading: 'Generate a blog post',
-    message: `Generate a blog post on how online donations can help parishes and non profits\n`
+    heading: 'Show me top 10 donors',
+    message: `Show me top 10 donors with their donation amounts\n`
   },
   {
-    heading: 'Write a facebook post',
-    message: 'Write a facebook post about givecentral text to give features \n'
+    heading: 'How do i issue refund',
+    message: 'How do i issue refund? \n'
   },
   {
     heading: 'Draft an email',

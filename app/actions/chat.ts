@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { auth } from '@/auth'
 import { type Chat } from '@/lib/types'
+import { getSession } from '@/app/actions/session'
 import { getSupabaseClient } from '@/lib/utils'
 
 const supabase = getSupabaseClient()
@@ -14,14 +14,14 @@ export async function getChats(userId?: string | null) {
   }
 
   const { data: chats, error } = await supabase
-  .from('chats')
-  .select('*')
-  .eq('user_id', userId)
-  .is('deleted_at', null)
-  .order('created_at', { ascending: false })
-  
-  if(error) {
-    console.log("Error getting chats: ", error)
+    .from('chats')
+    .select('*')
+    .eq('user_id', userId)
+    .is('deleted_at', null)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.log('Error getting chats: ', error)
     return []
   }
 
@@ -45,7 +45,7 @@ export async function getChat(id: string, userId: string) {
 }
 
 export async function removeChat({ id }: { id: string }) {
-  const session = await auth()
+  const session = await getSession()
 
   if (!session) {
     return {
@@ -59,14 +59,14 @@ export async function removeChat({ id }: { id: string }) {
     .update({ deleted_at: new Date().toISOString() })
     .eq('id', id)
 
-  if (error) console.log("Error removing chat: ", error)
+  if (error) console.log('Error removing chat: ', error)
 
   revalidatePath('/')
   return revalidatePath(`chat/${id}`)
 }
 
 export async function clearChats() {
-  const session = await auth()
+  const session = await getSession()
   if (!session?.user?.id) {
     return {
       error: 'Unauthorized'
@@ -93,7 +93,7 @@ export async function getSharedChat(id: string) {
 }
 
 export async function shareChat(id: string) {
-  const session = await auth()
+  const session = await getSession()
 
   if (!session?.user?.id) {
     return {

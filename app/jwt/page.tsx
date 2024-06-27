@@ -3,10 +3,10 @@ import * as jose from 'jose'
 
 export default async function Jwt() {
   const payload: JwtPayload = {
-    username: 'superadmin4',
-    name: 'superadmin',
-    email: 'sadmin@givecentral.org',
-    // location_id: 1,
+    username: 'test123',
+    name: 'test',
+    email: 'test@givecentral.org',
+    location_id: 1,
     // location_name: 'Fort Worth Advancement Foundation'
   }
 

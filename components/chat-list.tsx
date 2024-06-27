@@ -53,7 +53,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
 
   const dummyMessage: Message = {
     id: '',
-    content: 'Loading...',
+    content: '![Loading](/238.gif)',
     role: 'assistant'
   }
 

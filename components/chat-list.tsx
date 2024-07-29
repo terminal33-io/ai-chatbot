@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { Message } from 'ai'
 
 import { Separator } from '@/components/ui/separator'
@@ -6,9 +6,11 @@ import { ChatMessage } from '@/components/chat-message'
 import { type UseChatHelpers } from 'ai/react'
 import { useEffect, useState } from 'react'
 import { ChatSuggestions } from './chat-suggestions'
+import { Button } from './ui/button'
+import ChartView from './chart-view'
 
 export interface ChatList extends Pick<UseChatHelpers, 'isLoading' | 'append'> {
-  messages: Message[],
+  messages: Message[]
   id?: string
 }
 
@@ -16,7 +18,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
   const [latestUserMsg, setLatestUserMsg] = useState<Message | null>(null)
   const [latestBotMsg, setLatestBotMsg] = useState<Message | null>(null)
   const [incomingMsg, setIncomingMsg] = useState(false)
-
+  
   // set latest User & AI message
   useEffect(() => {
     if (messages.length > 0 && !isLoading) {
@@ -34,7 +36,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
   }, [messages, isLoading])
 
   // detect incoming bot message
-  // check messages length is change 
+  // check messages length is changing
   useEffect(() => {
     if (messages.length > 1 && isLoading) {
       const botMessages = messages.filter(msg => msg.role == 'assistant')
@@ -57,7 +59,6 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
     role: 'assistant'
   }
 
-  // console.log(latestUserMsg)
 
 
   return (
@@ -69,9 +70,6 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
             {index < messages.length - 1 && (
               <Separator className="my-4 md:my-8" />
             )}
-            {/* load suggestions for last message */}
-            {/* {!isLoading && index == messages.length-1 && <div>load suggestions</div>}
-            {isLoading && index == messages.length-1 && <div>loading...</div>} */}
           </div>
         ))}
 
@@ -81,7 +79,20 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
             <ChatMessage message={dummyMessage} />
           </>
         )}
+         
       </div>
+
+      {/* DB actions as per the last message */}
+      {/* <div className="mx-auto max-w-2xl pr-4 pt-1 mt-4">
+        <div className="px-4">
+          <Button onClick={() => showChart()}>
+            <span>See Chart</span>
+          </Button>
+          <Button className='ml-2'>
+            <span>Download Data</span>
+          </Button>
+        </div>
+      </div> */}
 
       {latestUserMsg && latestUserMsg.data == undefined && (
         <ChatSuggestions

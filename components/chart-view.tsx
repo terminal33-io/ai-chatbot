@@ -9,7 +9,10 @@ import {
     Tooltip,
     ArcElement,
     ChartType,
-    ChartData
+    ChartData,
+    BarController,
+    LineController,
+    PieController
   } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { useEffect, useState } from 'react';
@@ -22,7 +25,10 @@ ChartJS.register(
     LineElement,
     Legend,
     Tooltip,
-    ArcElement
+    ArcElement,
+    BarController,
+    LineController,
+    PieController
   );
 
 
@@ -43,7 +49,6 @@ const ChartView = ({show, messageId, chatId, setChartLoading}: Props) => {
     useEffect(()=> {
       const fetchData = async(messageId: string) => {
         setChartLoading(true)
-        // isLoading(true)
         try {
           const response = await fetch('/api/chart',{
             method: 'POST',
@@ -61,7 +66,6 @@ const ChartView = ({show, messageId, chatId, setChartLoading}: Props) => {
         } catch (error) {
           console.log(error)
         }
-        // isLoading(false)
         setChartLoading(false)
       }
 

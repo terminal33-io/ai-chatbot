@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const message = userMessage.content
   const userId = session?.user.id
   const accessToken = session?.accessToken
-  const model = 'gpt-4-0125-preview'
+  const model = 'gpt-4o'
   const version = '1.0.0'
   const source = 'webapp'
   const chatId = json.id

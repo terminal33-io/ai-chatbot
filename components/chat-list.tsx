@@ -18,7 +18,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
   const [latestUserMsg, setLatestUserMsg] = useState<Message | null>(null)
   const [latestBotMsg, setLatestBotMsg] = useState<Message | null>(null)
   const [incomingMsg, setIncomingMsg] = useState(false)
-  
+
   // set latest User & AI message
   useEffect(() => {
     if (messages.length > 0 && !isLoading) {
@@ -82,21 +82,10 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
          
       </div>
 
-      {/* DB actions as per the last message */}
-      {/* <div className="mx-auto max-w-2xl pr-4 pt-1 mt-4">
-        <div className="px-4">
-          <Button onClick={() => showChart()}>
-            <span>See Chart</span>
-          </Button>
-          <Button className='ml-2'>
-            <span>Download Data</span>
-          </Button>
-        </div>
-      </div> */}
 
       {latestUserMsg && latestUserMsg.data == undefined && (
         <ChatSuggestions
-          isLoading={incomingMsg || isLoading}
+          isLoading={isLoading}
           message={latestUserMsg}
           append={append}
           id={id}

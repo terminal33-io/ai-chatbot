@@ -5,6 +5,7 @@ import { ReactComponentElement, ReactElement, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Button } from './ui/button'
 import ChartView from './chart-view'
+import { IconGitHub, IconSpinner } from './ui/icons'
 
 type CreateMessage = Omit<Message, 'id'> & {
   id?: Message['id']
@@ -68,16 +69,22 @@ export const ChatSuggestions = ({
 }: ChatSuggestions) => {
   const [actionsData, setActionsData] = useState<ActionResponse>(initActions)
   const [displayChart, setDisplayChart] = useState(false)
-
+  const [chartLoading, setChartLoading] = useState(false)
+  const [actionsLoading, setActionsLoading] = useState(false)
 
   const showChart = () => {
     setDisplayChart(!displayChart)
   }
 
-
   useEffect(() => {
     if (!isLoading) {
+      //resey everthing
+      
+      setActionsData(initActions)
+      setDisplayChart(false)
+
       const fetchData = async (message: Message) => {
+        setActionsLoading(true)
         try {
           const response = await fetch('/api/actions', {
             method: 'POST',
@@ -96,13 +103,14 @@ export const ChatSuggestions = ({
         } catch (error) {
           console.log(error)
         }
+        setActionsLoading(false)
       }
       fetchData(message)
+    
     }
-  }, [message, id])
+  }, [message, id, isLoading])
 
-  // if state is loading and action promise is not resolved
-  if (isLoading) {
+  if (isLoading || actionsLoading) {
     return (
       <div className="mx-auto max-w-2xl pr-4 pt-1">
         <Skeleton count={3} />
@@ -117,16 +125,27 @@ export const ChatSuggestions = ({
     return (
       <div className="mx-auto max-w-2xl pr-4 pt-1">
         <div className="mb-4">
-          <div className="px-1 ml-4 mt-6">
+          <div className="px-1 ml-4">
             <div className="flex space-y-3 items-baseline flex-wrap">
-               <ChartView show={displayChart} messageId={message.id}/>
+              <ChartView
+                show={displayChart}
+                messageId={message.id}
+                chatId={id as string}
+                setChartLoading = {setChartLoading}
+              />
               {actionsData.data.length > 0 &&
                 actionsData.data.map((item: Action) => {
                   let component
                   switch (item.code) {
                     case 'CHART':
                       component = (
-                        <Button key={item.label} className="mr-3" onClick={() => showChart()}>
+                        <Button
+                          key={item.label}
+                          className="mr-3"
+                          onClick={() => showChart()}
+                          style={{ backgroundColor: chartLoading ? 'gray' : '' }} 
+                        >
+                          {chartLoading && <IconSpinner className='mr-2' />}
                           {item.label}
                         </Button>
                       )
@@ -154,7 +173,7 @@ export const ChatSuggestions = ({
                           className="mr-3"
                           onClick={async () => {
                             await append({
-                              content: "Send Email Campaign",
+                              content: 'Send Email Campaign',
                               role: 'user',
                               createdAt: new Date(),
                               data: {
@@ -170,7 +189,11 @@ export const ChatSuggestions = ({
                       break
                     default:
                       component = (
-                        <Button key={item.label} className="mr-3" variant={'outline'}>
+                        <Button
+                          key={item.label}
+                          className="mr-3"
+                          variant={'outline'}
+                        >
                           {item.label}
                         </Button>
                       )
@@ -187,9 +210,9 @@ export const ChatSuggestions = ({
   return (
     <div className="mx-auto max-w-2xl pr-4 pt-1">
       <div className="mb-4">
-        <div className="px-1 ml-4 mt-6">
+        <div className="px-1 ml-4 mt-2">
           <div className="text-md font-bold">Recommendations</div>
-          <div className="flex space-y-3 items-baseline flex-wrap">
+          <div className="flex space-y-3 items-baseline flex-wrap mt-3">
             {actionsData.data.length > 0 &&
               actionsData.data.map((item: Action) => (
                 <Button

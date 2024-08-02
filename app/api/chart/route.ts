@@ -1,7 +1,7 @@
 import { getSession } from "@/app/actions/session"
 import { NextRequest } from "next/server"
 
-
+export const maxDuration = 300
 const apiUrl = process.env.API_URL
 
 export async function POST(req: NextRequest) {

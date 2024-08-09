@@ -1,5 +1,7 @@
 import { getSession } from '@/app/actions/session'
 
+export const maxDuration = 300
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const messageId = searchParams.get('message_id')

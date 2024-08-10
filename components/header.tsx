@@ -33,8 +33,7 @@ import {
 import { getSession, logout } from '@/app/actions/session'
 
 async function UserOrLogin() {
-  const session = await getSession()//await auth()
-
+  const session = await getSession()
 
   return (
     <>
@@ -65,6 +64,7 @@ async function UserOrLogin() {
 }
 
 export function Header() {
+
   return (
     <header className="bg-[#131533] text-white sticky top-0 z-50 flex items-center justify-between lg:justify-normal w-full h-16 px-4 border-b shrink-0 backdrop-blur-xl">
       <div className="flex items-center lg:w-[250px] xl:w-[300px]">
@@ -73,6 +73,7 @@ export function Header() {
         </React.Suspense>
       </div>
       <div className="flex items-center justify-end space-x-2">
+
         {/* <a
           target="_blank"
           href="https://github.com/vercel/nextjs-ai-chatbot/"

@@ -12,9 +12,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { logout } from '@/app/actions/session'
+import { User } from '@/lib/types'
 
 export interface UserMenuProps {
-  user: Session['user']
+  user: User
 }
 
 function getUserInitials(name: string) {
@@ -46,12 +47,14 @@ export function UserMenu({ user }: UserMenuProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent sideOffset={8} align="start" className="w-[180px]">
           <DropdownMenuItem className="flex-col items-start">
-            <div className="text-xs font-medium">{user?.name}</div>
-            <div className="text-xs text-zinc-500">{user?.email}</div>
+            <div className="text-xs text-zinc-500">{user.email}</div>
+            <div className="text-xs text-zinc-700 mt-2">
+              {user.additional_info.location_name}
+            </div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
-            onClick={ async()=> {
+            onClick={async () => {
               await logout()
             }}
             className="text-xs"

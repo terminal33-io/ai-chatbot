@@ -95,7 +95,8 @@ export async function POST(req: Request) {
           additional_info: {
             model,
             version,
-            source
+            source,
+            env: process.env.NODE_ENV
           }
         }
         const { error } = await supabase.from('chats').upsert(payload)

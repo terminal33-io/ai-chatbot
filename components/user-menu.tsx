@@ -49,7 +49,7 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuItem className="flex-col items-start">
             <div className="text-xs text-zinc-500">{user.email}</div>
             <div className="text-xs text-zinc-700 mt-2">
-              {user.additional_info.location_name}
+              {user?.additional_info?.location_name}
             </div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

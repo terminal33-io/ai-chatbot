@@ -31,13 +31,13 @@ export type User = {
   email: string
   status: boolean
   image?: string
-  additional_info: {
-    location_id: number
-    location_name: string
+  additional_info?: {
+    location_id?: number
+    location_name?: string
   }
 }
 
-export type NewUser = Omit<User, 'id'>
+export type NewUser = Omit<User, 'id' | 'status'>
 
 export interface SessionData {
   accessToken: string

@@ -32,8 +32,7 @@ export default function AuthCallback() {
         return response.json()
       })
       .then(() => {
-        const redirectTo = searchParams.get('redirect_to') || '/'
-        router.push(redirectTo)
+        window.location.href = '/'
       })
       .catch(error => {
         console.error('Auth error:', error)

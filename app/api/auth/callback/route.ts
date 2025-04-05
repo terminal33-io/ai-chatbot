@@ -1,55 +1,53 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { getIronSession } from 'iron-session'
+import { sessionOptions } from '@/lib/utils'
+import { SessionData } from '@/lib/types'
 
 export async function GET(request: Request) {
   try {
-    const { searchParams } = new URL(request.url)
-    const token = searchParams.get('token')
+    // Get token from Authorization header
+    const authHeader = request.headers.get('Authorization')
+    const token = authHeader?.replace('Bearer ', '')
 
     if (!token) {
-      return NextResponse.redirect(
-        new URL('/magic-link?error=missing_token', request.url)
-      )
+      return NextResponse.json({ error: 'Missing token' }, { status: 401 })
     }
 
     // Forward the token to backend for verification
-    const response = await fetch(`${process.env.API_URL}/auth/callback`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ token })
-    })
+    const response = await fetch(
+      `${process.env.API_URL}/auth/callback?token=${token}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
 
     if (!response.ok) {
       const error = await response.json()
-      return NextResponse.redirect(
-        new URL(
-          `/magic-link?error=${error.message || 'verification_failed'}`,
-          request.url
-        )
+      return NextResponse.json(
+        { error: error.message || 'Verification failed' },
+        { status: response.status }
       )
     }
 
-    const { user, sessionToken } = await response.json()
+    const { token: accessToken, user } = await response.json()
 
-    // Set the session cookie
-    cookies().set('session', sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7 // 1 week
-    })
+    // Create new session using iron-session
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    session.isLoggedIn = true
+    session.accessToken = accessToken
+    session.user = user
+    await session.save()
 
-    // Get the redirect URL from the query params or default to home
-    const redirectTo = searchParams.get('redirect_to') || '/'
-
-    return NextResponse.redirect(new URL(redirectTo, request.url))
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Auth callback error:', error)
-    return NextResponse.redirect(
-      new URL('/magic-link?error=internal_error', request.url)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
     )
   }
 }

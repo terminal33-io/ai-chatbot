@@ -4,6 +4,9 @@ export async function POST(request: Request) {
   try {
     const { email, redirect_to } = await request.json()
 
+    console.log('email', email)
+    console.log('redirect_to', redirect_to)
+
     if (!email) {
       return NextResponse.json(
         { message: 'Email is required' },

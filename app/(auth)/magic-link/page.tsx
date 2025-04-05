@@ -1,17 +1,15 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { MagicLinkForm } from '@/components/auth/magic-link-form'
 import Image from 'next/image'
 
 export default function MagicLinkPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirectTo = searchParams.get('redirect_to') || '/'
+  const redirectTo = 'http://localhost:3000/magic-link/callback'
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black bg-opacity-50">
+    <div className="flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-black/50">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center">
           <Image

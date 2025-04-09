@@ -11,6 +11,8 @@ export async function POST(request: Request) {
       )
     }
 
+    console.log('redirect_to', redirect_to)
+
     // Forward the request to backend
     const response = await fetch(`${process.env.API_URL}/auth/magic-link`, {
       method: 'POST',

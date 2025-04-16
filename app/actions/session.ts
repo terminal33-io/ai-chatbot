@@ -22,6 +22,8 @@ export async function login(token: string) {
     //validate token
     const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
 
+    // console.log(payload)
+
     let userData: NewUser = {
       username: payload.username,
       name: payload.name,

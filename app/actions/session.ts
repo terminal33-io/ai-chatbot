@@ -9,8 +9,6 @@ import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
 import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
 
-
-
 export async function getSession() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
   if (!session.user) return null
@@ -45,14 +43,17 @@ export async function login(token: string) {
 
     if (user) {
       // generate access token
-      const response = await fetch(`${process.env.API_URL}/generate-token`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user),
-        cache: 'no-store'
-      })
+      const response = await fetch(
+        `${process.env.API_URL}/auth/generate-token`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user),
+          cache: 'no-store'
+        }
+      )
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`)
@@ -77,7 +78,7 @@ export async function login(token: string) {
     } else {
       errorMessage = 'An unknown error occurred'
     }
-    revalidatePath("/sso")
+    revalidatePath('/sso')
     return { error: errorMessage }
   }
   redirect('/')

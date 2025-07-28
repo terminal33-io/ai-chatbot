@@ -5,18 +5,20 @@ import { login } from '@/app/actions/session'
 
 // TODO: check if session already exist, show logout option
 const SSOPage = () => {
-  const [,setError] = useState()
+  const [, setError] = useState()
   const params = useSearchParams()
   const token = params.get('token')
+  const qid = params.get('qid') ? parseInt(params.get('qid') as string) : null
 
   useEffect(() => {
     if (token) {
       const initSSO = async () => {
-        const {error} = (await login(token)) || {}
-        if(error) {
+        const { error } = (await login(token, qid)) || {}
+        if (error) {
           setError(() => {
-              throw error
-          });
+            console.log(error)
+            throw error
+          })
         }
       }
       initSSO()

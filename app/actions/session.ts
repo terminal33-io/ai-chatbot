@@ -4,7 +4,7 @@ import { getIronSession, IronSession, SessionOptions } from 'iron-session'
 import { cookies } from 'next/dist/client/components/headers'
 import { redirect } from 'next/navigation'
 import * as jose from 'jose'
-import { getSupabaseClient, sessionOptions } from '@/lib/utils'
+import { sessionOptions } from '@/lib/utils'
 import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
 import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
@@ -15,14 +15,11 @@ export async function getSession() {
   return session
 }
 
-export async function login(token: string) {
-  const supabase = getSupabaseClient()
+export async function login(token: string, qid: number | null = null) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   try {
     //validate token
     const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
-
-    // console.log(payload)
 
     let userData: NewUser = {
       username: payload.username,
@@ -38,6 +35,7 @@ export async function login(token: string) {
     }
     // get user
     let user = await getUser(payload.username)
+
     // console.log(user)
     if (!user) {
       user = await createUser(userData)
@@ -83,7 +81,11 @@ export async function login(token: string) {
     revalidatePath('/sso')
     return { error: errorMessage }
   }
-  redirect('/')
+  let redirectPath = '/'
+  if (qid) {
+    redirectPath = `${redirectPath}?qid=${qid}`
+  }
+  redirect(redirectPath)
 }
 
 export async function logout() {

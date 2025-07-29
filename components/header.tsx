@@ -1,70 +1,30 @@
+
 import * as React from 'react'
-import Link from 'next/link'
 
-import { cn } from '@/lib/utils'
-import { auth } from '@/auth'
-import { clearChats } from '@/app/actions/chat'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Sidebar } from '@/components/sidebar'
-import { SidebarList } from '@/components/sidebar-list'
-import {
-  IconApp,
-  IconArrowDown,
-  IconChevronUpDown,
-  IconGitHub,
-  IconNextChat,
-  IconSeparator,
-  IconVercel
-} from '@/components/ui/icons'
-import { SidebarFooter } from '@/components/sidebar-footer'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { ClearHistory } from '@/components/clear-history'
-import { UserMenu } from '@/components/user-menu'
-import { SidebarMobile } from './sidebar-mobile'
-import { SidebarToggle } from './sidebar-toggle'
-import { ChatHistory } from './chat-history'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { getSession, logout } from '@/app/actions/session'
+import { getSession } from '@/app/actions/session'
 
-async function UserOrLogin() {
+import Link from "next/link";
+import { ChatHistory } from "./chat-history";
+import { SidebarMobile } from "./sidebar-mobile";
+import { SidebarToggle } from "./sidebar-toggle";
+import { IconApp, IconSeparator } from "./ui/icons";
+import { UserMenu } from "./user-menu";
+import { Button } from "./ui/button";
+import ClientLocationSelector from "./client-location-selector";
+import { LocationSelector } from './location-dropdown';
+import dynamic from 'next/dynamic';
+
+const UserOrLoginClient = dynamic(() => import('./user-or-login-client'), {
+  ssr: false
+})
+
+export default async function UserOrLogin() {
   const session = await getSession()
-
-  return (
-    <>
-      {session?.user ? (
-        <>
-          <SidebarMobile>
-            <ChatHistory userId={session.user.id} />
-          </SidebarMobile>
-          <SidebarToggle />
-        </>
-      ) : (
-        <Link href="/" target="_blank" rel="nofollow">
-          <IconApp className="w-6 h-6 mr-2 dark:fill-white" />
-        </Link>
-      )}
-      <div className="flex items-center">
-        <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
-        {session?.user ? (
-          <UserMenu user={session.user}/>
-        ) : (
-          <Button variant="link" asChild className="-ml-2">
-            <Link href="/sign-in?callbackUrl=/">Login</Link>
-          </Button>
-        )}
-      </div>
-    </>
-  )
+  return <UserOrLoginClient session={session} />
 }
 
-export function Header() {
-
+export async function Header() {
+  const session = await getSession()
   return (
     <header className="bg-[#131533] text-white sticky top-0 z-50 flex items-center justify-between lg:justify-normal w-full h-16 px-4 border-b shrink-0 backdrop-blur-xl">
       <div className="flex items-center lg:w-[250px] xl:w-[300px]">

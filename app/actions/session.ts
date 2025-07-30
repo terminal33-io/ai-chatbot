@@ -17,6 +17,7 @@ export async function getSession() {
 
 export async function login(token: string) {
   const supabase = getSupabaseClient()
+  const session = await getSession();
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   try {
     //validate token

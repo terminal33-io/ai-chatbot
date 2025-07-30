@@ -31,7 +31,6 @@ export function LocationSelector({
             const token = localStorage.getItem('accessToken')
             if (!token) {
                 console.warn('No access token found')
-                return
             }
 
             setLoading(true)

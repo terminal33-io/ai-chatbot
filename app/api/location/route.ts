@@ -11,17 +11,16 @@ export async function POST(req: Request) {
         return new Response('Unauthorized', { status: 401 })
     }
 
-    const { keyword } = await req.json()
+    const { keyword }: {keyword: string} = await req.json()
 
     try {
-        const response = await fetch(`${apiUrl}/search/location`, {
-            method: 'POST',
+        const response = await fetch(`${apiUrl}/search/location/${keyword}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`,
                 'X-SECRET': secret
             },
-            body: JSON.stringify({ keyword: keyword })
         })
 
         if ([401, 403].includes(response.status)) {

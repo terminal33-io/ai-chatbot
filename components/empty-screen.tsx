@@ -1,6 +1,7 @@
 // import { UseChatHelpers } from 'ai/react'
 import { Button } from '@/components/ui/button'
 import { IconArrowRight } from '@/components/ui/icons'
+import { useEffect, useState } from 'react'
 
 const exampleMessages = [
   {
@@ -23,13 +24,34 @@ export function EmptyScreen({
 }: {
   onSubmit: (value: string) => void
   qid: string | null
-}) {
-  // TODO: Fetch the boot question from the api and hit the onSubmit function
+  }) {
+  const [loading, setLoading] = useState(false);
   // TODO: Check for valid response from the api, in case of errror, show the empty screen
-  if (qid) {
-    return (
-      <div className="mx-auto max-w-2xl px-4">Loading Boot Question...</div>
-    )
+  useEffect(() => {
+    const fetchBootQuestion = async () => {
+      if (!qid) return
+
+      try {
+        setLoading(true)
+        const res = await fetch(`/api/question?qid=${qid}`)
+        if (!res.ok) throw new Error('Failed to fetch question')
+        const data = await res.json()
+        if (data?.question_title) {
+          onSubmit(data.question_title)
+        }
+      } catch (error) {
+        console.error('Error fetching question:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBootQuestion()
+  }, [qid, onSubmit])
+  
+  // TODO: Fetch the boot question from the api and hit the onSubmit function
+  if (qid && loading) {
+    return <div className="mx-auto max-w-2xl px-4">Loading Boot Question...</div>
   }
 
   // TODO: The default messages need to be fetched from the api

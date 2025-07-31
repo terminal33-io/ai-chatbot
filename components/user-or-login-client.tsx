@@ -15,37 +15,37 @@ export default function UserOrLoginClient({
     session: any
 }) {
     const handleLocationSelect = (location: { id: number; name: string }) => {
-        console.log('Selected location:', location)
+        localStorage.setItem('selectedLocation', JSON.stringify(location))
     }
 
     return (
-        <>
-            {session?.user ? (
-                <>
-                    <SidebarMobile>
-                        <ChatHistory userId={session.user.id} />
-                    </SidebarMobile>
-                    <SidebarToggle />
-                </>
-            ) : (
-                <Link href="/" target="_blank" rel="nofollow">
-                    <IconApp className="w-6 h-6 mr-2 dark:fill-white" />
-                </Link>
-            )}
-            <div className="flex items-center">
+        <div className="w-full flex items-center justify-between px-4">
+            <div className="flex items-center space-x-4">
+                {session?.user ? (
+                    <>
+                        <SidebarMobile>
+                            <ChatHistory userId={session.user.id} />
+                        </SidebarMobile>
+                        <SidebarToggle />
+                    </>
+                ) : (
+                    <Link href="/" target="_blank" rel="nofollow">
+                        <IconApp className="w-6 h-6 mr-2 dark:fill-white" />
+                    </Link>
+                )}
                 <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
-                <div className="flex space-x-5">
-                    {session?.user ? (
-                        <UserMenu user={session.user} />
-                    ) : (
-                        <Button variant="link" asChild className="-ml-2">
-                            <Link href="/sign-in?callbackUrl=/">Login</Link>
-                        </Button>
-                    )}
-
-                    <ClientLocationSelector onSelect={handleLocationSelect} />
-                </div>
+                {session?.user ? (
+                    <UserMenu user={session.user} />
+                ) : (
+                    <Button variant="link" asChild className="-ml-2">
+                        <Link href="/sign-in?callbackUrl=/">Login</Link>
+                    </Button>
+                )}
             </div>
-        </>
+
+            <div className="ml-auto">
+                <ClientLocationSelector onSelect={handleLocationSelect} />
+            </div>
+        </div>
     )
 }

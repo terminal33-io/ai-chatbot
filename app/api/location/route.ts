@@ -19,7 +19,8 @@ export async function POST(req: Request) {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${accessToken}`,
-                'X-SECRET': secret
+                'X-SECRET': secret,
+                'secret':secret
             },
         })
 

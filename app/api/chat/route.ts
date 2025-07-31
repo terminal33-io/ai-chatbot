@@ -13,13 +13,14 @@ type ChatPayload = {
   model: string,
   chat_id: string,
   message_id: string,
+  location_id: string;
   data?: string
 }
 
 export async function POST(req: Request) {
   const session = await getSession()
   const json = await req.json()
-  const { messages } = json
+  const { messages , location_id } = json
   const userMessage = messages[messages.length - 1]
   const message = userMessage.content
   const userId = session?.user.id
@@ -43,6 +44,7 @@ export async function POST(req: Request) {
     model,
     chat_id: chatId,
     message_id: messageId,
+    location_id: location_id
   };
 
   if (typeof data !== 'undefined') {

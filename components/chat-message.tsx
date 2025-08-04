@@ -15,10 +15,7 @@ export interface ChatMessageProps {
   message: Message
 }
 
-export function ChatMessage({
-  message,
-  ...props
-}: ChatMessageProps) {
+export function ChatMessage({ message, ...props }: ChatMessageProps) {
   return (
     <>
       <div
@@ -33,7 +30,11 @@ export function ChatMessage({
               : 'border-0 text-primary-foreground'
           )}
         >
-          {message.role === 'user' ? <IconUser /> : <Image src="/gc_icon.svg" width="32" height="32" alt="GC logo"/>}
+          {message.role === 'user' ? (
+            <IconUser />
+          ) : (
+            <Image src="/gc_icon.svg" width="32" height="32" alt="GC logo" />
+          )}
         </div>
         <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
           <MemoizedReactMarkdown
@@ -74,6 +75,20 @@ export function ChatMessage({
                     value={String(children).replace(/\n$/, '')}
                     {...props}
                   />
+                )
+              },
+              table({ children }) {
+                return (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">{children}</table>
+                  </div>
+                )
+              },
+              th({ children, ...props }) {
+                return (
+                  <th className="whitespace-nowrap" {...props}>
+                    {children}
+                  </th>
                 )
               }
             }}

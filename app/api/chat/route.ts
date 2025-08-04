@@ -9,10 +9,10 @@ const apiUrl = process.env.API_URL
 const secret = process.env.APP_SECRET as string
 
 type ChatPayload = {
-  message: string,
-  model: string,
-  chat_id: string,
-  message_id: string,
+  message: string
+  model: string
+  chat_id: string
+  message_id: string
   data?: string
 }
 
@@ -31,7 +31,6 @@ export async function POST(req: Request) {
   const messageId = userMessage.id
   const data = userMessage.data
 
-
   if (!userId || !accessToken) {
     return new Response('Unauthorized', {
       status: 401
@@ -42,26 +41,24 @@ export async function POST(req: Request) {
     message,
     model,
     chat_id: chatId,
-    message_id: messageId,
-  };
-
-  if (typeof data !== 'undefined') {
-    payload.data = data;
+    message_id: messageId
   }
 
+  if (typeof data !== 'undefined') {
+    payload.data = data
+  }
 
   try {
     const response = await fetch(`${apiUrl}/chat`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        'X-SECRET': secret,
+        Authorization: `Bearer ${accessToken}`
       },
       method: 'POST',
       body: JSON.stringify(payload)
     })
 
-    if([400,401,403].includes(response.status)) {
+    if ([400, 401, 403].includes(response.status)) {
       return new Response('Unauthorized', {
         status: 401
       })
@@ -113,5 +110,4 @@ export async function POST(req: Request) {
   } catch (e) {
     console.log('error', e)
   }
-  
 }

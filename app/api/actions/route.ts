@@ -25,12 +25,19 @@ export async function POST(req: Request) {
         body: JSON.stringify(payload)
       })
 
-    if (!response.ok) {
-      console.log(response.status)
-    }
+  if (!response.ok) {
+    const errorText = await response.text() 
+    console.error(`❌ Backend returned ${response.status}:`, errorText)
 
-    const data = await response.json()
-    // console.log(data)
+    return new Response(JSON.stringify({
+      error: "Failed to fetch chat actions",
+      status: response.status,
+      message: errorText
+    }), { status: response.status })
+  }
+
+
+  const data = await response.json()
 
     return Response.json(data)
 }

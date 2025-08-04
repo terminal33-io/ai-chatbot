@@ -50,7 +50,8 @@ export async function login(token: string, qid: number | null = null) {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            SECRET: process.env.APP_SECRET || ''
           },
           body: JSON.stringify(user),
           cache: 'no-store'

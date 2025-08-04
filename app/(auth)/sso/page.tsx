@@ -11,7 +11,6 @@ const SSOPage = () => {
   const router = useRouter()
 
   const [error, setError] = useState<Error | null>(null)
-  const [conflict, setConflict] = useState(false)
   const [newUser, setNewUser] = useState<any>(null)
   const [existingUser, setExistingUser] = useState<any>(null)
 
@@ -40,7 +39,6 @@ const SSOPage = () => {
           if (!result?.isSameUser) {
             setNewUser(result.newUser)
             setExistingUser(result.existingUser)
-            setConflict(true)
             setLoading(false)
             return
           }
@@ -76,7 +74,7 @@ const SSOPage = () => {
     )
   }
 
-  if (conflict) {
+  if (existingUser && newUser) {
     return (
       <div className="max-w-2xl mx-auto mt-20 text-center">
         <h2 className="text-xl font-semibold mb-4">Different session detected</h2>

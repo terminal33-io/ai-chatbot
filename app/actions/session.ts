@@ -3,14 +3,13 @@
 import { getIronSession, SessionOptions } from 'iron-session'
 import { cookies } from 'next/dist/client/components/headers'
 import * as jose from 'jose'
-import { getSupabaseClient, sessionOptions } from '@/lib/utils'
+import { sessionOptions } from '@/lib/utils'
 import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
 import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 export async function login(token: string, opts?: { forceSwitch?: boolean }) {
-  const supabase = getSupabaseClient()
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
 
@@ -29,21 +28,19 @@ export async function login(token: string, opts?: { forceSwitch?: boolean }) {
         : undefined
     }
 
-
     let newUser = await getUser(payload.username)
     if (!newUser) {
       newUser = await createUser(newUserData)
     }
 
-
     const existingUser = session?.user || null
-
     const isSameUser = existingUser?.email === newUser.email
     const isSameUsername = existingUser?.username === newUser.username
 
+    const shouldProceed =
+      !existingUser || isSameUser || opts?.forceSwitch === true
 
-    if (isSameUser || opts?.forceSwitch) {
-
+    if (shouldProceed) {
       const response = await fetch(`${process.env.API_URL}/auth/generate-token`, {
         method: 'POST',
         headers: {
@@ -59,38 +56,36 @@ export async function login(token: string, opts?: { forceSwitch?: boolean }) {
 
       const { data } = await response.json()
 
-
       session.isLoggedIn = true
       session.accessToken = data.token
       session.user = newUser
       await session.save()
 
-      if (!opts?.forceSwitch) {
-        return {
-          isSameUser,
-          isSameUsername,
-          existingUser,
-          newUser
-        }
+      return {
+        success: true,
+        isSameUser,
+        isSameUsername,
+        newUser,
+        existingUser: null
       }
-
-      redirect('/')
     }
 
     return {
+      success: false,
       isSameUser: false,
       isSameUsername: false,
-      existingUser,
-      newUser
+      newUser,
+      existingUser
     }
   } catch (e) {
     console.error('SSO login error:', e)
-    let errorMessage =
-      e instanceof Error ? e.message : 'An unknown error occurred'
+    const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred'
     revalidatePath('/sso')
     return { error: errorMessage }
   }
 }
+
+
 
 
 

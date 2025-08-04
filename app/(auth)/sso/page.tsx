@@ -5,9 +5,7 @@ import { login } from '@/app/actions/session'
 import { Button } from '@/components/ui/button'
 
 const SSOPage = () => {
-  const params = useSearchParams()
-  const token = params.get('token')
-  const qid = params.get('qid')
+
   const router = useRouter()
 
   const [error, setError] = useState<Error | null>(null)
@@ -15,12 +13,16 @@ const SSOPage = () => {
   const [existingUser, setExistingUser] = useState<any>(null)
 
   const [loading, setLoading] = useState(true)
+  const params = useSearchParams()
+  const token = params.get('token')
+  const qid = params.get('qid') ? parseInt(params.get('qid') as string) : null
+
 
   useEffect(() => {
     if (token) {
       const initSSO = async () => {
         try {
-          const result = await login(token)
+          const result = await login(token,qid)
 
           if (result?.error) {
             throw result.error
@@ -47,6 +49,7 @@ const SSOPage = () => {
         } catch (err: any) {
           setError(err)
           setLoading(false)
+
         }
       }
       initSSO()

@@ -13,6 +13,10 @@ export async function login(token: string, opts?: { forceSwitch?: boolean }) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
 
+
+
+export async function login(token: string, qid: number | null = null) {
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   try {
     const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
 
@@ -31,6 +35,14 @@ export async function login(token: string, opts?: { forceSwitch?: boolean }) {
     let newUser = await getUser(payload.username)
     if (!newUser) {
       newUser = await createUser(newUserData)
+
+    if (payload.location_id) {
+      userData.additional_info = {
+        location_id: payload.location_id,
+        location_name: payload.location_name
+      }
+    }
+
     }
 
     const existingUser = session?.user || null
@@ -83,6 +95,14 @@ export async function login(token: string, opts?: { forceSwitch?: boolean }) {
     revalidatePath('/sso')
     return { error: errorMessage }
   }
+
+
+  let redirectPath = '/'
+  if (qid) {
+    redirectPath = `${redirectPath}?qid=${qid}`
+  }
+  redirect(redirectPath)
+
 }
 
 

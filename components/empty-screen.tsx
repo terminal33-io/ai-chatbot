@@ -24,8 +24,8 @@ export function EmptyScreen({
 }: {
   onSubmit: (value: string) => void
   qid: string | null
-  }) {
-  const [loading, setLoading] = useState(false);
+}) {
+  const [loading, setLoading] = useState(false)
   // TODO: Check for valid response from the api, in case of errror, show the empty screen
   useEffect(() => {
     const fetchBootQuestion = async () => {
@@ -48,10 +48,32 @@ export function EmptyScreen({
 
     fetchBootQuestion()
   }, [qid, onSubmit])
-  
-  // TODO: Fetch the boot question from the api and hit the onSubmit function
+
   if (qid && loading) {
-    return <div className="mx-auto max-w-2xl px-4">Loading Boot Question...</div>
+    return (
+      <div className="mx-auto max-w-2xl px-4 flex items-center space-x-2">
+        <svg
+          className="animate-spin h-5 w-5 text-muted-foreground"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          ></path>
+        </svg>
+      </div>
+    )
   }
 
   // TODO: The default messages need to be fetched from the api

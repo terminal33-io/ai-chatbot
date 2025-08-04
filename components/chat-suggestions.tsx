@@ -1,11 +1,10 @@
 import { Message } from 'ai'
-import { UseChatHelpers } from 'ai/react/dist'
-import { ok } from 'assert'
-import { ReactComponentElement, ReactElement, useEffect, useState } from 'react'
+import { ReactElement, useEffect, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { Button } from './ui/button'
 import ChartView from './chart-view'
 import { IconGitHub, IconSpinner } from './ui/icons'
+import { UseChatHelpers } from 'ai/react'
 
 type CreateMessage = Omit<Message, 'id'> & {
   id?: Message['id']
@@ -79,7 +78,7 @@ export const ChatSuggestions = ({
   useEffect(() => {
     if (!isLoading) {
       //resey everthing
-      
+
       setActionsData(initActions)
       setDisplayChart(false)
 
@@ -106,7 +105,6 @@ export const ChatSuggestions = ({
         setActionsLoading(false)
       }
       fetchData(message)
-    
     }
   }, [message, id, isLoading])
 
@@ -131,7 +129,7 @@ export const ChatSuggestions = ({
                 show={displayChart}
                 messageId={message.id}
                 chatId={id as string}
-                setChartLoading = {setChartLoading}
+                setChartLoading={setChartLoading}
               />
               {actionsData.data.length > 0 &&
                 actionsData.data.map((item: Action) => {
@@ -143,9 +141,11 @@ export const ChatSuggestions = ({
                           key={item.label}
                           className="mr-3"
                           onClick={() => showChart()}
-                          style={{ backgroundColor: chartLoading ? 'gray' : '' }} 
+                          style={{
+                            backgroundColor: chartLoading ? 'gray' : ''
+                          }}
                         >
-                          {chartLoading && <IconSpinner className='mr-2' />}
+                          {chartLoading && <IconSpinner className="mr-2" />}
                           {item.label}
                         </Button>
                       )

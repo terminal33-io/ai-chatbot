@@ -23,7 +23,7 @@ const SSOPage = () => {
       }
       initSSO()
     }
-  }, [token])
+  }, [token, qid])
 
   return (
     <>

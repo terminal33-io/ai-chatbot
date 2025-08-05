@@ -8,11 +8,13 @@ import { UserMenu } from './user-menu'
 import { Button } from './ui/button'
 import ClientLocationSelector from './client-location-selector'
 import Link from 'next/link'
+import { IronSession } from 'iron-session'
+import { SessionData } from '@/lib/types'
 
 export default function UserOrLoginClient({
     session
 }: {
-    session: any
+    session: IronSession<SessionData> | null
 }) {
     const handleLocationSelect = (location: { id: number; name: string }) => {
         localStorage.setItem('selectedLocation', JSON.stringify(location))
@@ -43,9 +45,11 @@ export default function UserOrLoginClient({
                 )}
             </div>
 
-            <div className="ml-auto">
-                <ClientLocationSelector onSelect={handleLocationSelect} />
-            </div>
+            {!session?.user.additional_info?.location_id && (
+                <div className="ml-auto">
+                    <ClientLocationSelector onSelect={handleLocationSelect} />
+                </div>
+          )}
         </div>
     )
 }

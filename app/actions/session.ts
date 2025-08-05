@@ -18,7 +18,6 @@ export async function getSession() {
 
 export async function login(token: string, qid: number | null = null) {
 
-  const supabase = getSupabaseClient()
   const session = await getSession();
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   try {

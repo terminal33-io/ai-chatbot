@@ -1,22 +1,22 @@
 'use server'
 
-import { getIronSession, SessionOptions } from 'iron-session'
+import { getIronSession } from 'iron-session'
 import { cookies } from 'next/dist/client/components/headers'
 import * as jose from 'jose'
 import { sessionOptions } from '@/lib/utils'
-import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
+import { JwtPayload, NewUser, SessionData } from '@/lib/types'
 import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-export async function login(token: string, opts?: { forceSwitch?: boolean }) {
+export async function login(
+  token: string,
+  qid: number | null = null,
+  opts?: { forceSwitch?: boolean }
+) {
   const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
 
-
-
-export async function login(token: string, qid: number | null = null) {
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
   try {
     const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
 
@@ -35,17 +35,10 @@ export async function login(token: string, qid: number | null = null) {
     let newUser = await getUser(payload.username)
     if (!newUser) {
       newUser = await createUser(newUserData)
-
-    if (payload.location_id) {
-      userData.additional_info = {
-        location_id: payload.location_id,
-        location_name: payload.location_name
-      }
-    }
-
     }
 
     const existingUser = session?.user || null
+
     const isSameUser = existingUser?.email === newUser.email
     const isSameUsername = existingUser?.username === newUser.username
 
@@ -78,7 +71,7 @@ export async function login(token: string, qid: number | null = null) {
         isSameUser,
         isSameUsername,
         newUser,
-        existingUser: null
+        qid
       }
     }
 
@@ -95,14 +88,6 @@ export async function login(token: string, qid: number | null = null) {
     revalidatePath('/sso')
     return { error: errorMessage }
   }
-
-
-  let redirectPath = '/'
-  if (qid) {
-    redirectPath = `${redirectPath}?qid=${qid}`
-  }
-  redirect(redirectPath)
-
 }
 
 

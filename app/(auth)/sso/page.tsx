@@ -1,64 +1,55 @@
 'use client'
+
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { login } from '@/app/actions/session'
 import { Button } from '@/components/ui/button'
 
 const SSOPage = () => {
-
   const router = useRouter()
 
   const [error, setError] = useState<Error | null>(null)
   const [newUser, setNewUser] = useState<any>(null)
   const [existingUser, setExistingUser] = useState<any>(null)
-
   const [loading, setLoading] = useState(true)
+
   const params = useSearchParams()
   const token = params.get('token')
-  const qid = params.get('qid') ? parseInt(params.get('qid') as string) : null
-
+  const qid = params.get('qid') ? parseInt(params.get('qid')!) : null
 
   useEffect(() => {
-    if (token) {
-      const initSSO = async () => {
-        try {
-          const result = await login(token,qid)
+    if (!token) return
 
-          if (result?.error) {
-            throw result.error
-          }
+    const initSSO = async () => {
+      try {
+        const result = await login(token, qid)
 
-          if (result?.isSameUsername) {
+        if (result?.error) throw result.error
+
+        if (result.success) {
+          if (result.isSameUser && result.qid) {
+            router.replace(`/?qid=${result.qid}`)
+          } else {
             router.replace('/')
-            return
           }
-
-          if (result?.isSameUser && qid) {
-            router.replace(`/chat/${qid}`)
-            return
-          }
-
-          if (!result?.isSameUser) {
-            setNewUser(result.newUser)
-            setExistingUser(result.existingUser)
-            setLoading(false)
-            return
-          }
-
-          router.replace('/')
-        } catch (err: any) {
-          setError(err)
-          setLoading(false)
-
+          return
         }
+
+        setNewUser(result.newUser)
+        setExistingUser(result.existingUser)
+        setLoading(false)
+      } catch (err: any) {
+        setError(err)
+        setLoading(false)
       }
-      initSSO()
     }
+
+    initSSO()
   }, [token, qid, router])
 
   const handleContinueAsNewUser = async () => {
     try {
-      await login(token!, { forceSwitch: true })
+      await login(token!, 0, { forceSwitch: true })
       router.replace('/')
     } catch (err: any) {
       setError(err)
@@ -81,7 +72,9 @@ const SSOPage = () => {
     return (
       <div className="max-w-2xl mx-auto mt-20 text-center">
         <h2 className="text-xl font-semibold mb-4">Different session detected</h2>
-        <p className="mb-6 text-gray-600">You're trying to sign in with a different account. What would you like to do?</p>
+        <p className="mb-6 text-gray-600">
+          You're trying to sign in with a different account. What would you like to do?
+        </p>
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">
             <h3 className="font-medium mb-2">Current User</h3>

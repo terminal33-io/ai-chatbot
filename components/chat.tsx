@@ -8,9 +8,8 @@ import { ChatPanel } from '@/components/chat-panel'
 import { EmptyScreen } from '@/components/empty-screen'
 import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { toast } from 'react-hot-toast'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { signOut } from 'next-auth/react'
-import Skeleton from 'react-loading-skeleton'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -19,6 +18,8 @@ export interface ChatProps extends React.ComponentProps<'div'> {
 
 export function Chat({ id, initialMessages, className }: ChatProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const qid = searchParams.get('qid')
   const path = usePathname()
   const locationData = localStorage.getItem("selectedLocation");
   const locationId = locationData ? JSON.parse(locationData).id : "";
@@ -52,11 +53,25 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
       <div className={cn('pb-[200px] pt-4 md:pt-10', className)}>
         {messages.length ? (
           <>
-            <ChatList messages={messages} isLoading={isLoading} append={append} id={id}/>
+            <ChatList
+              messages={messages}
+              isLoading={isLoading}
+              append={append}
+              id={id}
+            />
             <ChatScrollAnchor trackVisibility={isLoading} />
           </>
         ) : (
-          <EmptyScreen setInput={setInput} />
+          <EmptyScreen
+            qid={qid}
+            onSubmit={async (value: string) => {
+              await append({
+                content: value,
+                role: 'user',
+                createdAt: new Date()
+              })
+            }}
+          />
         )}
       </div>
       <ChatPanel

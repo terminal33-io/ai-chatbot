@@ -32,7 +32,6 @@ export async function POST(req: Request) {
   const messageId = userMessage.id
   const data = userMessage.data
 
-
   if (!userId || !accessToken) {
     return new Response('Unauthorized', {
       status: 401
@@ -47,23 +46,22 @@ export async function POST(req: Request) {
     location_id: location_id
   };
 
-  if (typeof data !== 'undefined') {
-    payload.data = data;
-  }
 
+  if (typeof data !== 'undefined') {
+    payload.data = data
+  }
 
   try {
     const response = await fetch(`${apiUrl}/chat`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        'X-SECRET': secret,
+        Authorization: `Bearer ${accessToken}`
       },
       method: 'POST',
       body: JSON.stringify(payload)
     })
 
-    if([400,401,403].includes(response.status)) {
+    if ([400, 401, 403].includes(response.status)) {
       return new Response('Unauthorized', {
         status: 401
       })
@@ -115,5 +113,4 @@ export async function POST(req: Request) {
   } catch (e) {
     console.log('error', e)
   }
-  
 }

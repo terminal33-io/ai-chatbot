@@ -59,8 +59,6 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
     role: 'assistant'
   }
 
-
-
   return (
     <>
       <div className="relative mx-auto max-w-2xl px-4">
@@ -79,9 +77,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
             <ChatMessage message={dummyMessage} />
           </>
         )}
-         
       </div>
-
 
       {latestUserMsg && latestUserMsg.data == undefined && (
         <ChatSuggestions

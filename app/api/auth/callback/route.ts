@@ -20,7 +20,8 @@ export async function GET(request: Request) {
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          SECRET: process.env.APP_SECRET || ''
         }
       }
     )

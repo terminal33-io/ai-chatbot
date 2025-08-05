@@ -4,14 +4,13 @@ import { getSupabaseClient } from './lib/utils'
 
 declare module 'next-auth' {
   interface Session {
-    accessToken: string,
+    accessToken: string
     user: {
       /** The user's id. */
       id: string
     } & DefaultSession['user']
   }
 }
-
 
 export const {
   handlers: { GET, POST },
@@ -33,7 +32,7 @@ export const {
           .eq('email', profile.email)
           .maybeSingle()
 
-        if(error) console.log('error fetching user', error);
+        if (error) console.log('error fetching user', error)
 
         if (!user) {
           console.log('creating user')
@@ -44,11 +43,20 @@ export const {
           })
 
           if (error) console.log('error creating user', error)
-        }        
+        }
       }
 
-      if (account?.provider === "google" && profile?.email && profile?.email_verified) {
-        return profile.email_verified && (profile.email.endsWith("@nuclaysolutions.com") || profile.email.endsWith("@givecentral.org") || profile.email.endsWith("@terminal33.io"))
+      if (
+        account?.provider === 'google' &&
+        profile?.email &&
+        profile?.email_verified
+      ) {
+        return (
+          profile.email_verified &&
+          (profile.email.endsWith('@nuclaysolutions.com') ||
+            profile.email.endsWith('@givecentral.org') ||
+            profile.email.endsWith('@terminal33.io'))
+        )
       }
 
       return true
@@ -64,22 +72,24 @@ export const {
           .limit(1)
           .single()
 
-        if(error) console.log('error fetching user', error)
+        if (error) console.log('error fetching user', error)
 
         // generate api jwt token to session
-        const response = await fetch(`${process.env.API_URL}/generate-token`,{
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: data.email,
-            name: data.name
-          })
-        })
+        const response = await fetch(
+          `${process.env.API_URL}/auth/generate-token`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: data.email,
+              name: data.name
+            })
+          }
+        )
 
-
-        const {data: apiData} = await response.json()
+        const { data: apiData } = await response.json()
         token.id = data.id
         token.accessToken = apiData.token
       }

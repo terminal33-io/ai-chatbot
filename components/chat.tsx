@@ -21,13 +21,16 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
   const searchParams = useSearchParams()
   const qid = searchParams.get('qid')
   const path = usePathname()
+  const locationData = localStorage.getItem("selectedLocation");
+  const locationId = locationData ? JSON.parse(locationData).id : "";
   const { messages, append, reload, stop, isLoading, input, setInput } =
     useChat({
       initialMessages,
       id,
       sendExtraMessageFields: true,
       body: {
-        id
+        id,
+        location_id:locationId,
       },
       onResponse(response) {
         if (response.status === 401) {

@@ -24,7 +24,7 @@ export async function generateMetadata({
     title: chat?.title.toString().slice(0, 50) ?? 'Chat'
   }
 }
-
+// TODO: we already have page, we just need to redirect the user here(?)
 export default async function ChatPage({ params }: ChatPageProps) {
   const session = await getSession()
 

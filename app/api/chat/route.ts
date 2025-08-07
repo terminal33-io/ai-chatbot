@@ -9,17 +9,18 @@ const apiUrl = process.env.API_URL
 const secret = process.env.APP_SECRET as string
 
 type ChatPayload = {
-  message: string
-  model: string
-  chat_id: string
-  message_id: string
+  message: string,
+  model: string,
+  chat_id: string,
+  message_id: string,
+  location_id: string;
   data?: string
 }
 
 export async function POST(req: Request) {
   const session = await getSession()
   const json = await req.json()
-  const { messages } = json
+  const { messages , location_id } = json
   const userMessage = messages[messages.length - 1]
   const message = userMessage.content
   const userId = session?.user.id
@@ -41,8 +42,10 @@ export async function POST(req: Request) {
     message,
     model,
     chat_id: chatId,
-    message_id: messageId
-  }
+    message_id: messageId,
+    location_id: location_id
+  };
+
 
   if (typeof data !== 'undefined') {
     payload.data = data

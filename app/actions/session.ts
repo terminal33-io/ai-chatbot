@@ -49,9 +49,10 @@ export async function login(
       const response = await fetch(`${process.env.API_URL}/auth/generate-token`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'secret': process.env.ADMIN_SECRET!
         },
-        body: JSON.stringify(newUser),
+        body: JSON.stringify({ username: newUser.username }),
         cache: 'no-store'
       })
 

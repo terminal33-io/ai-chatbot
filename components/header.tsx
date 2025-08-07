@@ -13,10 +13,9 @@ import { Button } from "./ui/button";
 import ClientLocationSelector from "./client-location-selector";
 import { LocationSelector } from './location-dropdown';
 import dynamic from 'next/dynamic';
+import UserOrLoginClient from './user-or-login-client';
 
-const UserOrLoginClient = dynamic(() => import('./user-or-login-client'), {
-  ssr: false
-})
+
 
 export default async function UserOrLogin() {
   const session = await getSession()

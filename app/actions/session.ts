@@ -9,43 +9,46 @@ import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+
+export async function resolveToken(token: string):Promise<JwtPayload> {
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+    const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
+    return payload;
+  } catch (err) {
+    console.error("[RESOLVE TOKEN] Error: ", err)
+    throw err
+ }
+}
+
 export async function login(
   token: string,
   qid: number | null = null,
   opts?: { forceSwitch?: boolean }
 ) {
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
 
   try {
-    const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    const currentUser = session.user
+    const newUserData = await resolveToken(token)
 
-    const newUserData: NewUser = {
-      username: payload.username,
-      name: payload.name,
-      email: payload.email,
-      additional_info: payload.location_id
-        ? {
-          location_id: payload.location_id,
-          location_name: payload.location_name
-        }
-        : undefined
-    }
-
-    let newUser = await getUser(payload.username)
+    let newUser = await getUser(newUserData.username)
     if (!newUser) {
       newUser = await createUser(newUserData)
     }
+    
+    const isSameUser = currentUser?.email === newUser.email
 
-    const existingUser = session?.user || null
+    if (currentUser && !isSameUser) {
+      return {
+        conflict: true,
+        existingUser: currentUser,
+        newUser
+      }
+    }
 
-    const isSameUser = existingUser?.email === newUser.email
-    const isSameUsername = existingUser?.username === newUser.username
-
-    const shouldProceed =
-      !existingUser || isSameUser || opts?.forceSwitch === true
-
-    if (shouldProceed) {
       const response = await fetch(`${process.env.API_URL}/auth/generate-token`, {
         method: 'POST',
         headers: {
@@ -69,20 +72,9 @@ export async function login(
 
       return {
         success: true,
-        isSameUser,
-        isSameUsername,
-        newUser,
-        qid
+        user: newUser
       }
-    }
-
-    return {
-      success: false,
-      isSameUser: false,
-      isSameUsername: false,
-      newUser,
-      existingUser
-    }
+    
   } catch (e) {
     console.error('SSO login error:', e)
     const errorMessage = e instanceof Error ? e.message : 'An unknown error occurred'

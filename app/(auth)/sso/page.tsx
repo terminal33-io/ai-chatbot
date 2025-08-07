@@ -2,18 +2,18 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { login } from '@/app/actions/session'
+import { getSession, login, logout, resolveToken } from '@/app/actions/session'
 import { Button } from '@/components/ui/button'
 
 const SSOPage = () => {
   const router = useRouter()
+  const params = useSearchParams()
 
   const [error, setError] = useState<Error | null>(null)
   const [newUser, setNewUser] = useState<any>(null)
   const [existingUser, setExistingUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
-  const params = useSearchParams()
   const token = params.get('token')
   const qid = params.get('qid') ? parseInt(params.get('qid')!) : null
 
@@ -21,23 +21,22 @@ const SSOPage = () => {
     if (!token) return
 
     const initSSO = async () => {
+      setLoading(true)
+
       try {
         const result = await login(token, qid)
 
-        if (result?.error) throw result.error
-
-        if (result.success) {
-          if (result.isSameUser && result.qid) {
-            router.replace(`/?qid=${result.qid}`)
-          } else {
-            router.replace('/')
-          }
-          return
+        if (result?.error) {
+          throw new Error(result.error)
         }
 
-        setNewUser(result.newUser)
-        setExistingUser(result.existingUser)
-        setLoading(false)
+        if (result?.conflict) {
+          setNewUser(result.newUser)
+          setExistingUser(result.existingUser)
+          return setLoading(false)
+        }
+
+        router.replace(qid ? `/?qid=${qid}` : '/')
       } catch (err: any) {
         setError(err)
         setLoading(false)
@@ -49,7 +48,8 @@ const SSOPage = () => {
 
   const handleContinueAsNewUser = async () => {
     try {
-      await login(token!, 0, { forceSwitch: true })
+      await logout()
+      await login(token!, qid)
       router.replace('/')
     } catch (err: any) {
       setError(err)
@@ -78,13 +78,13 @@ const SSOPage = () => {
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">
             <h3 className="font-medium mb-2">Current User</h3>
-            <p className="text-sm">Username: {existingUser?.username}</p>
-            <p className="text-sm">Email: {existingUser?.email}</p>
+            <p className="text-sm">Username: {existingUser.username}</p>
+            <p className="text-sm">Email: {existingUser.email}</p>
           </div>
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">
             <h3 className="font-medium mb-2">New User</h3>
-            <p className="text-sm">Username: {newUser?.username}</p>
-            <p className="text-sm">Email: {newUser?.email}</p>
+            <p className="text-sm">Username: {newUser.username}</p>
+            <p className="text-sm">Email: {newUser.email}</p>
           </div>
         </div>
         <div className="flex justify-center gap-4">

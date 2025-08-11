@@ -20,13 +20,7 @@ export async function resolveToken(token: string): Promise<JwtPayload> {
   }
 }
 
-export async function login(
-  token: string,
-  qid: number | null = null,
-  opts?: { forceSwitch?: boolean }
-) {
-  const session = await getIronSession<SessionData>(cookies(), sessionOptions)
-
+export async function login(token: string) {
   try {
     const session = await getIronSession<SessionData>(cookies(), sessionOptions)
     const currentUser = session.user
@@ -37,7 +31,7 @@ export async function login(
       newUser = await createUser(newUserData)
     }
 
-    const isSameUser = currentUser?.email === newUser.email
+    const isSameUser = currentUser?.username === newUser.username
 
     if (currentUser && !isSameUser) {
       return {

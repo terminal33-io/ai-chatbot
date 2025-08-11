@@ -24,7 +24,7 @@ const SSOPage = () => {
       setLoading(true)
 
       try {
-        const result = await login(token, qid)
+        const result = await login(token)
 
         if (result?.error) {
           throw new Error(result.error)

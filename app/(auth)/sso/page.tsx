@@ -49,7 +49,7 @@ const SSOPage = () => {
   const handleContinueAsNewUser = async () => {
     try {
       await logout()
-      await login(token!, qid)
+      await login(token!)
       router.replace('/')
     } catch (err: any) {
       setError(err)

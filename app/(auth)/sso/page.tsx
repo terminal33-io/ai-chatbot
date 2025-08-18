@@ -2,53 +2,52 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { getSession, login, logout, resolveToken } from '@/app/actions/session'
+import { checkLoginConflict, login, logoutUser, verifyToken } from '@/app/actions/session'
 import { Button } from '@/components/ui/button'
+import { createUser, getUser } from '@/app/actions/user'
 
 const SSOPage = () => {
+  console.log("Coming here.")
   const router = useRouter()
   const params = useSearchParams()
 
   const [error, setError] = useState<Error | null>(null)
   const [newUser, setNewUser] = useState<any>(null)
-  const [existingUser, setExistingUser] = useState<any>(null)
+  const [currentUser, setCurrentUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   const token = params.get('token')
-  const qid = params.get('qid') ? parseInt(params.get('qid')!) : null
+  const qid = params.get('qid') ? parseInt(params.get('qid')!, 10) : null
 
   useEffect(() => {
     if (!token) return
 
-    const initSSO = async () => {
+    const handleSSOLogin = async () => {
       setLoading(true)
 
       try {
         const result = await login(token, qid)
-
-        if (result?.error) {
-          throw new Error(result.error)
-        }
-
         if (result?.conflict) {
-          setNewUser(result.newUser)
-          setExistingUser(result.existingUser)
-          return setLoading(false)
+          setNewUser(result.conflict.newUser)
+          setCurrentUser(result.conflict.existingUser)
+          setLoading(false)
+          return
         }
-
+        if (result?.error) throw new Error(result.error)
         router.replace(qid ? `/?qid=${qid}` : '/')
+
       } catch (err: any) {
         setError(err)
         setLoading(false)
       }
     }
 
-    initSSO()
+    handleSSOLogin()
   }, [token, qid, router])
 
-  const handleContinueAsNewUser = async () => {
+  const handleSwitchToNewUser = async () => {
     try {
-      await logout()
+      await logoutUser()
       await login(token!, qid)
       router.replace('/')
     } catch (err: any) {
@@ -56,7 +55,7 @@ const SSOPage = () => {
     }
   }
 
-  const handleKeepExistingUser = () => {
+  const handleKeepCurrentUser = () => {
     router.replace('/')
   }
 
@@ -68,7 +67,7 @@ const SSOPage = () => {
     )
   }
 
-  if (existingUser && newUser) {
+  if (currentUser && newUser) {
     return (
       <div className="max-w-2xl mx-auto mt-20 text-center">
         <h2 className="text-xl font-semibold mb-4">Different session detected</h2>
@@ -78,8 +77,8 @@ const SSOPage = () => {
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">
             <h3 className="font-medium mb-2">Current User</h3>
-            <p className="text-sm">Username: {existingUser.username}</p>
-            <p className="text-sm">Email: {existingUser.email}</p>
+            <p className="text-sm">Username: {currentUser.username}</p>
+            <p className="text-sm">Email: {currentUser.email}</p>
           </div>
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">
             <h3 className="font-medium mb-2">New User</h3>
@@ -88,10 +87,10 @@ const SSOPage = () => {
           </div>
         </div>
         <div className="flex justify-center gap-4">
-          <Button variant="outline" onClick={handleKeepExistingUser}>
+          <Button variant="outline" onClick={handleKeepCurrentUser}>
             Keep Current User
           </Button>
-          <Button onClick={handleContinueAsNewUser}>Continue as New User</Button>
+          <Button onClick={handleSwitchToNewUser}>Continue as New User</Button>
         </div>
       </div>
     )

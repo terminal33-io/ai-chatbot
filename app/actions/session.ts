@@ -101,7 +101,7 @@ export async function getSession() {
 }
 
 
-export async function logoutUser() {
+export async function logout() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
   session.destroy()
   redirect('/logout')

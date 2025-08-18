@@ -2,7 +2,7 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { checkLoginConflict, login, logoutUser, verifyToken } from '@/app/actions/session'
+import { checkLoginConflict, login, logout } from '@/app/actions/session'
 import { Button } from '@/components/ui/button'
 import { createUser, getUser } from '@/app/actions/user'
 
@@ -47,7 +47,7 @@ const SSOPage = () => {
 
   const handleSwitchToNewUser = async () => {
     try {
-      await logoutUser()
+      await logout()
       await login(token!, qid)
       router.replace('/')
     } catch (err: any) {
@@ -70,9 +70,12 @@ const SSOPage = () => {
   if (currentUser && newUser) {
     return (
       <div className="max-w-2xl mx-auto mt-20 text-center">
-        <h2 className="text-xl font-semibold mb-4">Different session detected</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Loosk like you are already logged in!
+        </h2>
         <p className="mb-6 text-gray-600">
-          You're trying to sign in with a different account. What would you like to do?
+          You&apos;re trying to sign in with a different account. What would you
+          like to do?
         </p>
         <div className="grid grid-cols-2 gap-6 mb-6">
           <div className="p-4 py-8 border rounded shadow-sm bg-gray-900">

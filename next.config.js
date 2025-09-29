@@ -11,7 +11,7 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'imgs.search.brave.com',
+        hostname: 'images.unsplash.com',
         port: '',
         pathname: '**'
       }

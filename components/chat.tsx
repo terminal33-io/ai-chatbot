@@ -47,7 +47,7 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     })
   return (
     <>
-      <div className={cn('pt-4 md:pt-10 bg-white py-6', className)}>
+      <div className={cn('pb-[200px] md:pt-10 bg-white', className)}>
         {messages.length ? (
           <>
             <ChatList
@@ -71,16 +71,18 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
           />
         )}
       </div>
-      {/* <ChatPanel
-        id={id}
-        isLoading={isLoading}
-        stop={stop}
-        append={append}
-        reload={reload}
-        messages={messages}
-        input={input}
-        setInput={setInput}
-      /> */}
+      {messages.length && (
+        <ChatPanel
+          id={id}
+          isLoading={isLoading}
+          stop={stop}
+          append={append}
+          reload={reload}
+          messages={messages}
+          input={input}
+          setInput={setInput}
+        />
+      )}
     </>
   )
 }

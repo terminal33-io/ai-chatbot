@@ -4,7 +4,7 @@ import { IconSparkle } from '@/components/ui/icons'
 const examples = {
   faqs: [
     'How do I add a new donor to the system?',
-    'How can I update donor contact information?',
+    'How can I send a smart email to donors?',
     'How do I set up automated thank you messages?',
     'What security measures are taken to protect donor payment information in givecentral?'
   ],

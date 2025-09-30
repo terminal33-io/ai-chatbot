@@ -1,12 +1,12 @@
-import * as React from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { getSession } from "@/app/actions/session"
-import { Button } from "./ui/button"
-import { Sidebar } from "./sidebar"
-import { SidebarToggle } from "./sidebar-toggle"
-import { IconSeparator } from "./ui/icons"
-import { UserMenu } from "./user-menu"
+import * as React from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { getSession } from '@/app/actions/session'
+import { Button } from './ui/button'
+import { Sidebar } from './sidebar'
+import { SidebarToggle } from './sidebar-toggle'
+import { IconSeparator } from './ui/icons'
+import { UserMenu } from './user-menu'
 
 async function UserInfo() {
   const session = await getSession()
@@ -22,9 +22,11 @@ async function UserInfo() {
   return (
     <div className="flex items-center space-x-3">
       <p className="text-sm text-white">
-        Welcome <span className="font-semibold">{session.user.name}</span>, You have been logged in as{" "}
-        <span className="font-semibold">Admin</span> for{" "}
-        <span className="font-semibold">GiveCentral&apos;s</span>
+        Welcome <span className="font-semibold">{session.user.name}</span>, You
+        have been logged for{' '}
+        <span className="font-semibold">
+          {session.user.additional_info?.location_name}
+        </span>
       </p>
       {session.user.image && (
         <Image
@@ -36,7 +38,7 @@ async function UserInfo() {
         />
       )}
 
-      <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
+      <IconSeparator className="size-6 text-muted-foreground/50" />
       {session?.user ? (
         <UserMenu user={session.user} />
       ) : (

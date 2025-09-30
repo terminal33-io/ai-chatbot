@@ -4,9 +4,10 @@ import { Input } from '@/components/ui/input'
 
 interface QueryInputProps {
   onSubmit: (value: string) => void
+  existingChat?: boolean
 }
 
-export function QueryInput({ onSubmit }: QueryInputProps) {
+export function QueryInput({ onSubmit, existingChat }: QueryInputProps) {
   const [inputValue, setInputValue] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,9 +27,11 @@ export function QueryInput({ onSubmit }: QueryInputProps) {
 
   return (
     <div className="flex flex-col space-y-8">
-      <h1 className="text-4xl text-black text-center font-poppins">
-        Welcome to <span className="font-semibold">Guru AI</span>
-      </h1>
+      {!existingChat && (
+        <h1 className="text-4xl text-black text-center font-poppins">
+          Welcome to <span className="font-semibold">Guru AI</span>
+        </h1>
+      )}
       <form
         onSubmit={handleSubmit}
         className="flex items-center w-full p-4 rounded-full border bg-white shadow-sm overflow-hidden"
@@ -44,7 +47,7 @@ export function QueryInput({ onSubmit }: QueryInputProps) {
           onClick={handleButtonClick}
           className="rounded-full px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white"
         >
-          Chat
+          {!existingChat ? 'Chat' : 'Send'}
         </Button>
       </form>
     </div>

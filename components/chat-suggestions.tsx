@@ -208,7 +208,7 @@ export const ChatSuggestions = ({
     )
 
   return (
-    <div className="mx-auto max-w-2xl pr-4 pt-1">
+    <div className="mx-auto max-w-2xl pr-4 pt-1 text-gray-800">
       <div className="mb-4">
         <div className="px-1 ml-4 mt-2">
           <div className="text-md font-bold">Recommendations</div>
@@ -217,7 +217,7 @@ export const ChatSuggestions = ({
               actionsData.data.map((item: Action) => (
                 <Button
                   key={item.label}
-                  variant={'outline'}
+                  variant={'secondary'}
                   className="mr-3"
                   onClick={async () => {
                     if (item.link) {

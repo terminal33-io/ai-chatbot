@@ -10,6 +10,7 @@ import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { toast } from 'react-hot-toast'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { signOut } from 'next-auth/react'
+import { QueryInput } from './home/query-input'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -47,28 +48,47 @@ export function Chat({ id, initialMessages, className }: ChatProps) {
     })
   return (
     <>
-      <div className={cn('pt-4 md:pt-10 bg-white py-6', className)}>
+      <div className={cn('pt-6 bg-white min-h-[91vh] flex flex-col', className)}>
         {messages.length ? (
-          <>
-            <ChatList
-              messages={messages}
-              isLoading={isLoading}
-              append={append}
-              id={id}
-            />
-            <ChatScrollAnchor trackVisibility={isLoading} />
-          </>
+          <div className="flex flex-col flex-1">
+            <div className="flex-1 overflow-y-auto px-4">
+              <ChatList
+                messages={messages}
+                isLoading={isLoading}
+                append={append}
+                id={id}
+              />
+              <ChatScrollAnchor trackVisibility={isLoading} />
+            </div>
+
+            <div className="">
+              <div className="mx-8 py-2">
+                <QueryInput
+                  existingChat={true}
+                  onSubmit={async (value: string) => {
+                    await append({
+                      content: value,
+                      role: "user",
+                      createdAt: new Date(),
+                    })
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         ) : (
-          <Home
-            qid={qid}
-            onSubmit={async (value: string) => {
-              await append({
-                content: value,
-                role: 'user',
-                createdAt: new Date()
-              })
-            }}
-          />
+          <div className="flex-1">
+            <Home
+              qid={qid}
+              onSubmit={async (value: string) => {
+                await append({
+                  content: value,
+                  role: "user",
+                  createdAt: new Date(),
+                })
+              }}
+            />
+          </div>
         )}
       </div>
       {/* <ChatPanel

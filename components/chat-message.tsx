@@ -36,20 +36,20 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             <Image src="/gc_icon.svg" width="32" height="32" alt="GC logo" />
           )}
         </div>
-        <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
+        <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden text-gray-800">
           <MemoizedReactMarkdown
-            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
+            className="prose break-words prose-p:leading-relaxed prose-pre:p-0 prose-headings:text-gray-800 prose-p:text-gray-800 prose-strong:text-gray-800 prose-code:text-gray-800"
             remarkPlugins={[remarkGfm, remarkMath]}
             linkTarget="_blank"
             components={{
               p({ children }) {
-                return <p className="mb-2 last:mb-0">{children}</p>
+                return <p className="mb-2 text-gray-800 last:mb-0">{children}</p>
               },
               code({ node, inline, className, children, ...props }) {
                 if (children.length) {
                   if (children[0] == '▍') {
                     return (
-                      <span className="mt-1 cursor-default animate-pulse">
+                      <span className="mt-1 text-gray-800 cursor-default animate-pulse">
                         ▍
                       </span>
                     )

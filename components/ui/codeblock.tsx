@@ -68,7 +68,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
       3,
       true
     )}${fileExtension}`
-    const fileName = window.prompt('Enter file name' || '', suggestedFileName)
+    const fileName = window.prompt('Enter file name', suggestedFileName || '')
 
     if (!fileName) {
       // User pressed cancel on prompt.
@@ -129,7 +129,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
           padding: '1.5rem 1rem'
         }}
         lineNumberStyle={{
-          userSelect: "none",
+          userSelect: 'none'
         }}
         codeTagProps={{
           style: {

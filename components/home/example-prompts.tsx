@@ -6,7 +6,7 @@ const examples = {
     'How do I add a new donor to the system?',
     'How can I update donor contact information?',
     'How do I set up automated thank you messages?',
-    'What security measures protect donor payment information?'
+    'What security measures are taken to protect donor payment information in givecentral?'
   ],
   analytics: [
     'Give me summary of transactions for the last week.',

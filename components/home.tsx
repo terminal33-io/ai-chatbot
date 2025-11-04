@@ -43,7 +43,7 @@ export function Home({
 
   if (qid && loading) {
     return (
-      <div className="mx-auto max-w-2xl px-4 flex items-center space-x-2">
+      <div className="mx-auto max-w-3xl px-4 flex items-center space-x-2">
         <svg
           className="animate-spin size-5 text-muted-foreground"
           xmlns="http://www.w3.org/2000/svg"

@@ -52,9 +52,9 @@ async function UserInfo() {
 
 export function Header() {
   return (
-    <header className="bg-[#2A3B4B] text-white sticky top-0 z-50 flex items-center justify-between w-full h-16  border-b backdrop-blur-xl">
+    <header className="bg-[#2A3B4B] text-white sticky top-0 z-50 flex items-center justify-between w-full h-16 backdrop-blur-xl">
       <div className="flex gap-2 min-w-[250px] lg:min-w-[300px] bg-[#33485C] h-full items-center justify-between px-3">
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-1 justify-center grow">
           <span className="text-lg font-light">GiveCentral</span>
           <span className="text-lg font-bold">Guru AI</span>
         </div>

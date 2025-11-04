@@ -12,8 +12,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-poppins)', 'sans-serif'], // makes Poppins the default
-        poppins: ['var(--font-poppins)', 'sans-serif'] // optional custom utility
+        sans: ['var(--font-inter)', 'sans-serif'], // makes Inter the default (ChatGPT style)
+        inter: ['var(--font-inter)', 'sans-serif'] // optional custom utility
       },
       colors: {
         border: 'hsl(var(--border))',

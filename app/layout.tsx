@@ -1,16 +1,15 @@
 import { Toaster } from 'react-hot-toast'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
-import { Poppins } from 'next/font/google'
+import { Inter } from 'next/font/google'
 
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/react'
 import 'react-loading-skeleton/dist/skeleton.css'
-
 
 export const metadata = {
   title: {
@@ -32,10 +31,9 @@ export const viewport = {
   ]
 }
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-poppins',
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-inter'
 })
 
 interface RootLayoutProps {
@@ -50,7 +48,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           'font-sans antialiased',
           GeistSans.variable,
           GeistMono.variable,
-          poppins.variable
+          inter.variable
         )}
       >
         <Toaster />

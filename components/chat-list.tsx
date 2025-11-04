@@ -1,7 +1,6 @@
 'use client'
 import { Message } from 'ai'
 
-import { Separator } from '@/components/ui/separator'
 import { ChatMessage } from '@/components/chat-message'
 import { type UseChatHelpers } from 'ai/react'
 import { useEffect, useState } from 'react'
@@ -61,22 +60,17 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
 
   return (
     <>
-      <div className="relative mx-auto max-w-2xl px-4">
-        {messages.map((message, index) => (
-          <div key={index}>
-            <ChatMessage message={message} />
-            {index < messages.length - 1 && (
-              <Separator className="my-4 md:my-8" />
-            )}
-          </div>
-        ))}
+      <div className="relative mx-auto max-w-3xl px-4">
+        {messages.map((message, index) => {
+          const isEvenIndex = index % 2 === 1
+          return (
+            <div key={index} className={isEvenIndex ? 'mb-8 md:mb-12' : ''}>
+              <ChatMessage message={message} />
+            </div>
+          )
+        })}
 
-        {isLoading && !incomingMsg && (
-          <>
-            <Separator className="my-4 md:my-8" />
-            <ChatMessage message={dummyMessage} />
-          </>
-        )}
+        {isLoading && !incomingMsg && <ChatMessage message={dummyMessage} />}
       </div>
 
       {latestUserMsg && latestUserMsg.data == undefined && (

@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useVoiceRecording } from '@/lib/hooks/use-voice-recording'
+import { VoiceRecordingButtons } from '@/components/voice-recording-buttons'
 
 interface QueryInputProps {
   onSubmit: (value: string) => void
@@ -8,6 +10,28 @@ interface QueryInputProps {
 
 export function QueryInput({ onSubmit }: QueryInputProps) {
   const [inputValue, setInputValue] = useState('')
+
+  const {
+    isRecording,
+    isTranscribing,
+    startRecording,
+    cancelRecording,
+    confirmRecording,
+    cleanup
+  } = useVoiceRecording({
+    onTranscriptionComplete: async (text: string) => {
+      setInputValue(text)
+      // await onSubmit(text)
+      // setInputValue('')
+    },
+    onError: (error: string) => {
+      alert(error)
+    }
+  })
+
+  useEffect(() => {
+    return cleanup
+  }, [cleanup])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,16 +60,32 @@ export function QueryInput({ onSubmit }: QueryInputProps) {
         <Input
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
-          placeholder="Ask me anything or choose a topic from below to start the conversation"
+          placeholder={
+            isTranscribing
+              ? 'Transcribing...'
+              : isRecording
+                ? 'Listening...'
+                : 'Ask me anything or choose a topic from below to start the conversation'
+          }
           className="flex-1 focus-visible:ring-0 focus-visible:ring-offset-0 px-4 text-black outline-none border-none shadow-none"
         />
-        <Button
-          type="button"
-          onClick={handleButtonClick}
-          className="rounded-full px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white"
-        >
-          Chat
-        </Button>
+        <div className="flex items-center gap-2">
+          <VoiceRecordingButtons
+            isRecording={isRecording}
+            isTranscribing={isTranscribing}
+            onStartRecording={startRecording}
+            onCancelRecording={cancelRecording}
+            onConfirmRecording={confirmRecording}
+          />
+          <Button
+            type="button"
+            onClick={handleButtonClick}
+            disabled={!inputValue.trim()}
+            className="rounded-full px-6 bg-gradient-to-r from-blue-500 to-blue-600 text-white disabled:opacity-50"
+          >
+            Chat
+          </Button>
+        </div>
       </form>
     </div>
   )

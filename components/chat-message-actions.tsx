@@ -11,6 +11,7 @@ interface ChatMessageActionsProps extends React.ComponentProps<'div'> {
   message: Message
   showOnHover?: boolean
   alignLeft?: boolean
+  hideForBotWhenGenerating?: boolean
 }
 
 export function ChatMessageActions({
@@ -18,6 +19,7 @@ export function ChatMessageActions({
   className,
   showOnHover = false,
   alignLeft = false,
+  hideForBotWhenGenerating = false,
   ...props
 }: ChatMessageActionsProps) {
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
@@ -27,12 +29,19 @@ export function ChatMessageActions({
     copyToClipboard(message.content)
   }
 
+  // Hide copy action for bot messages when they're still being generated
+  if (hideForBotWhenGenerating) {
+    return null
+  }
+
   return (
     <div
       className={cn(
-        'flex items-center mt-2 transition-opacity',
+        'flex items-center transition-opacity px-2',
         alignLeft ? 'justify-start' : 'justify-end',
-        showOnHover ? 'opacity-0 group-hover:opacity-100' : 'opacity-100',
+        showOnHover
+          ? 'opacity-0 group-hover/message:opacity-100'
+          : 'opacity-100',
         className
       )}
       {...props}

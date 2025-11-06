@@ -13,17 +13,22 @@ import Image from 'next/image'
 
 export interface ChatMessageProps {
   message: Message
+  isGenerating?: boolean
 }
 
-export function ChatMessage({ message, ...props }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  isGenerating = false,
+  ...props
+}: ChatMessageProps) {
   const isUser = message.role === 'user'
 
   return (
     <>
       <div
         className={cn(
-          'group relative mb-4 flex items-start gap-3',
-          isUser ? 'flex-row-reverse md:justify-end' : 'md:-ml-12 mt-10'
+          'group/message relative flex items-start gap-3',
+          isUser ? 'flex-row-reverse md:justify-end' : 'md:-ml-12'
         )}
         {...props}
       >
@@ -44,7 +49,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
         )}
         <div
           className={cn(
-            'flex-1 space-y-2 overflow-hidden',
+            'flex-1 space-y-1 overflow-hidden',
             isUser ? 'flex items-end flex-col group' : ''
           )}
         >
@@ -53,7 +58,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
               'rounded-2xl px-4 py-3 max-w-full',
               isUser
                 ? 'bg-muted text-foreground rounded-br-sm'
-                : 'border border-gray-200/70 text-foreground rounded-bl-sm'
+                : 'text-foreground py-0'
             )}
           >
             <MemoizedReactMarkdown
@@ -160,6 +165,7 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             message={message}
             showOnHover={isUser}
             alignLeft={!isUser}
+            hideForBotWhenGenerating={!isUser && isGenerating}
           />
         </div>
       </div>

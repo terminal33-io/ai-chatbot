@@ -110,7 +110,7 @@ export const ChatSuggestions = ({
 
   if (isLoading || actionsLoading) {
     return (
-      <div className="mx-auto max-w-3xl pr-4 pt-1">
+      <div className="mx-auto max-w-3xl pr-4 pt-1 px-2">
         <Skeleton count={3} />
       </div>
     )
@@ -218,7 +218,7 @@ export const ChatSuggestions = ({
                 <Button
                   key={item.label}
                   variant={'outline'}
-                  className="mr-6"
+                  className="mr-3"
                   onClick={async () => {
                     if (item.link) {
                       window.open(item.link, '_blank')

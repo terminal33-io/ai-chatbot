@@ -14,8 +14,8 @@ interface ChatHistoryProps {
 
 export async function ChatHistory({ userId }: ChatHistoryProps) {
   return (
-    <div className="flex flex-col h-full">
-       <Image src="/gc_logo.png" alt="Givecentral Logo" width="173" height="47" className='px-2 py-4' />
+    <div className="flex bg-[#33485C] flex-col h-full">
+      {/* <Image src="/gc_logo.png" alt="Givecentral Logo" width="173" height="47" className='px-2 py-4' /> */}
       <div className="px-2 my-4">
         <Link
           href="/"

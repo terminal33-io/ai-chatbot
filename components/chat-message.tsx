@@ -7,95 +7,166 @@ import remarkMath from 'remark-math'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
-import { IconOpenAI, IconUser } from '@/components/ui/icons'
+import { IconOpenAI } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
 import Image from 'next/image'
 
 export interface ChatMessageProps {
   message: Message
+  isGenerating?: boolean
 }
 
-export function ChatMessage({ message, ...props }: ChatMessageProps) {
+export function ChatMessage({
+  message,
+  isGenerating = false,
+  ...props
+}: ChatMessageProps) {
+  const isUser = message.role === 'user'
+
   return (
     <>
       <div
-        className={cn('group relative mb-4 flex items-start md:-ml-12')}
+        className={cn(
+          'group/message relative flex items-start gap-3',
+          isUser ? 'flex-row-reverse md:justify-end' : 'md:-ml-12'
+        )}
         {...props}
       >
+        {!isUser && (
+          <div
+            className={cn(
+              'flex size-8 shrink-0 select-none items-center justify-center text-foreground'
+            )}
+          >
+            <Image
+              src="/gc_icon.svg"
+              width="30"
+              height="30"
+              alt="GC logo"
+              className=""
+            />
+          </div>
+        )}
         <div
           className={cn(
-            'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
-            message.role === 'user'
-              ? 'bg-background'
-              : 'border-0 text-primary-foreground'
+            'flex-1 space-y-1 overflow-hidden',
+            isUser ? 'flex items-end flex-col group' : ''
           )}
         >
-          {message.role === 'user' ? (
-            <IconUser />
-          ) : (
-            <Image src="/gc_icon.svg" width="32" height="32" alt="GC logo" />
-          )}
-        </div>
-        <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
-          <MemoizedReactMarkdown
-            className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
-            remarkPlugins={[remarkGfm, remarkMath]}
-            linkTarget="_blank"
-            components={{
-              p({ children }) {
-                return <p className="mb-2 last:mb-0">{children}</p>
-              },
-              code({ node, inline, className, children, ...props }) {
-                if (children.length) {
-                  if (children[0] == '▍') {
+          <div
+            className={cn(
+              'rounded-2xl px-4 py-3 max-w-full',
+              isUser
+                ? 'bg-muted text-foreground rounded-br-sm'
+                : 'text-foreground py-0'
+            )}
+          >
+            <MemoizedReactMarkdown
+              className={cn(
+                'prose break-words prose-p:leading-relaxed prose-pre:p-0',
+                isUser
+                  ? 'dark:prose-invert prose-p:text-foreground prose-headings:text-foreground prose-strong:text-foreground'
+                  : 'dark:prose-invert prose-p:text-foreground'
+              )}
+              remarkPlugins={[remarkGfm, remarkMath]}
+              linkTarget="_blank"
+              components={{
+                p({ children }) {
+                  return (
+                    <p
+                      className={cn(
+                        'mb-2 last:mb-0',
+                        isUser ? 'text-primary-foreground' : ''
+                      )}
+                    >
+                      {children}
+                    </p>
+                  )
+                },
+                code({ node, inline, className, children, ...props }) {
+                  if (children.length) {
+                    if (children[0] == '▍') {
+                      return (
+                        <span
+                          className={cn(
+                            'mt-1 cursor-default animate-pulse',
+                            isUser ? 'text-primary-foreground' : ''
+                          )}
+                        >
+                          ▍
+                        </span>
+                      )
+                    }
+
+                    children[0] = (children[0] as string).replace('`▍`', '▍')
+                  }
+
+                  const match = /language-(\w+)/.exec(className || '')
+
+                  if (inline) {
                     return (
-                      <span className="mt-1 cursor-default animate-pulse">
-                        ▍
-                      </span>
+                      <code
+                        className={cn(
+                          className,
+                          isUser
+                            ? 'bg-background/50 text-foreground'
+                            : 'bg-background/50'
+                        )}
+                        {...props}
+                      >
+                        {children}
+                      </code>
                     )
                   }
 
-                  children[0] = (children[0] as string).replace('`▍`', '▍')
-                }
-
-                const match = /language-(\w+)/.exec(className || '')
-
-                if (inline) {
                   return (
-                    <code className={className} {...props}>
+                    <CodeBlock
+                      key={Math.random()}
+                      language={(match && match[1]) || ''}
+                      value={String(children).replace(/\n$/, '')}
+                      {...props}
+                    />
+                  )
+                },
+                table({ children }) {
+                  return (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full">{children}</table>
+                    </div>
+                  )
+                },
+                th({ children, ...props }) {
+                  return (
+                    <th className="whitespace-nowrap" {...props}>
                       {children}
-                    </code>
+                    </th>
+                  )
+                },
+                a({ children, ...props }) {
+                  return (
+                    <a
+                      className={cn(
+                        isUser
+                          ? 'text-foreground underline decoration-foreground/50'
+                          : ''
+                      )}
+                      {...props}
+                    >
+                      {children}
+                    </a>
                   )
                 }
-
-                return (
-                  <CodeBlock
-                    key={Math.random()}
-                    language={(match && match[1]) || ''}
-                    value={String(children).replace(/\n$/, '')}
-                    {...props}
-                  />
-                )
-              },
-              table({ children }) {
-                return (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full">{children}</table>
-                  </div>
-                )
-              },
-              th({ children, ...props }) {
-                return (
-                  <th className="whitespace-nowrap" {...props}>
-                    {children}
-                  </th>
-                )
-              }
-            }}
-          >
-            {message.content}
-          </MemoizedReactMarkdown>
-          <ChatMessageActions message={message} />
+              }}
+            >
+              {message.content}
+            </MemoizedReactMarkdown>
+          </div>
+          <ChatMessageActions
+            message={message}
+            showOnHover={isUser}
+            alignLeft={!isUser}
+            hideForBotWhenGenerating={!isUser && isGenerating}
+          />
         </div>
       </div>
     </>

@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { useEffect } from 'react'
 import Textarea from 'react-textarea-autosize'
 import { UseChatHelpers } from 'ai/react'
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
+import { useVoiceRecording } from '@/lib/hooks/use-voice-recording'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
 import {
@@ -9,8 +11,8 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { IconArrowElbow, IconPlus } from '@/components/ui/icons'
-import { useRouter } from 'next/navigation'
+import { IconArrowElbow } from '@/components/ui/icons'
+import { VoiceRecordingButtons } from '@/components/voice-recording-buttons'
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -26,12 +28,34 @@ export function PromptForm({
 }: PromptProps) {
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
-  const router = useRouter()
+
+  const {
+    isRecording,
+    isTranscribing,
+    startRecording,
+    cancelRecording,
+    confirmRecording,
+    cleanup
+  } = useVoiceRecording({
+    onTranscriptionComplete: async (text: string) => {
+      setInput(text)
+      // await onSubmit(text)
+      // setInput('')
+    },
+    onError: (error: string) => {
+      alert(error)
+    }
+  })
+
   React.useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus()
     }
   }, [])
+
+  useEffect(() => {
+    return cleanup
+  }, [cleanup])
 
   return (
     <form
@@ -45,8 +69,8 @@ export function PromptForm({
       }}
       ref={formRef}
     >
-      <div className="relative flex flex-col w-full px-8 overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border sm:px-12">
-        <Tooltip>
+      <div className="relative flex flex-col w-full overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border">
+        {/* <Tooltip>
           <TooltipTrigger asChild>
             <button
               onClick={e => {
@@ -56,7 +80,7 @@ export function PromptForm({
               }}
               className={cn(
                 buttonVariants({ size: 'sm', variant: 'outline' }),
-                'absolute left-0 top-4 h-8 w-8 rounded-full bg-background p-0 sm:left-4'
+                'absolute left-0 top-4 size-8 rounded-full bg-background p-0 sm:left-4'
               )}
             >
               <IconPlus />
@@ -64,32 +88,49 @@ export function PromptForm({
             </button>
           </TooltipTrigger>
           <TooltipContent>New Chat</TooltipContent>
-        </Tooltip>
-        <Textarea
-          ref={inputRef}
-          tabIndex={0}
-          onKeyDown={onKeyDown}
-          rows={1}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Send a message."
-          spellCheck={false}
-          className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
-        />
-        <div className="absolute right-0 top-4 sm:right-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isLoading || input === ''}
-              >
-                <IconArrowElbow />
-                <span className="sr-only">Send message</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
-          </Tooltip>
+        </Tooltip> */}
+        <div className="relative w-full">
+          <Textarea
+            ref={inputRef}
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            rows={1}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder={
+              isTranscribing
+                ? 'Transcribing...'
+                : isRecording
+                  ? 'Listening...'
+                  : 'Send a message.'
+            }
+            spellCheck={false}
+            className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+          />
+        </div>
+        <div className="absolute right-0 top-4 flex gap-2 sm:right-4">
+          <VoiceRecordingButtons
+            isRecording={isRecording}
+            isTranscribing={isTranscribing}
+            onStartRecording={startRecording}
+            onCancelRecording={cancelRecording}
+            onConfirmRecording={confirmRecording}
+          />
+          {!isRecording && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={isLoading || input === ''}
+                >
+                  <IconArrowElbow />
+                  <span className="sr-only">Send message</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Send message</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
     </form>

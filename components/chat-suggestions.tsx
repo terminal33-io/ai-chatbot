@@ -110,7 +110,7 @@ export const ChatSuggestions = ({
 
   if (isLoading || actionsLoading) {
     return (
-      <div className="mx-auto max-w-2xl pr-4 pt-1">
+      <div className="mx-auto max-w-3xl pr-4 pt-1 px-2">
         <Skeleton count={3} />
       </div>
     )
@@ -121,7 +121,7 @@ export const ChatSuggestions = ({
 
   if (actionsData.type == 'db')
     return (
-      <div className="mx-auto max-w-2xl pr-4 pt-1">
+      <div className="mx-auto max-w-3xl pr-4 pt-1">
         <div className="mb-4">
           <div className="px-1 ml-4">
             <div className="flex space-y-3 items-baseline flex-wrap">
@@ -208,11 +208,11 @@ export const ChatSuggestions = ({
     )
 
   return (
-    <div className="mx-auto max-w-2xl pr-4 pt-1">
+    <div className="mx-auto max-w-3xl pr-4">
       <div className="mb-4">
-        <div className="px-1 ml-4 mt-2">
+        <div className="px-1 ml-4">
           <div className="text-md font-bold">Recommendations</div>
-          <div className="flex space-y-3 items-baseline flex-wrap mt-3">
+          <div className="flex space-y-3 items-baseline flex-wrap mt-1">
             {actionsData.data.length > 0 &&
               actionsData.data.map((item: Action) => (
                 <Button

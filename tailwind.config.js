@@ -12,8 +12,8 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)']
+        sans: ['var(--font-inter)', 'sans-serif'], // makes Inter the default (ChatGPT style)
+        inter: ['var(--font-inter)', 'sans-serif'] // optional custom utility
       },
       colors: {
         border: 'hsl(var(--border))',

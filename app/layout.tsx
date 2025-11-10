@@ -1,18 +1,17 @@
 import { Toaster } from 'react-hot-toast'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { Inter } from 'next/font/google'
 
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
 import { Header } from '@/components/header'
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/react'
 import 'react-loading-skeleton/dist/skeleton.css'
 
-
 export const metadata = {
-  // metadataBase: new URL(`https://${process.env.VERCEL_URL}`),
   title: {
     default: `${process.env.APP_NAME}`,
     template: `%s - GC Guru`
@@ -32,6 +31,11 @@ export const viewport = {
   ]
 }
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter'
+})
+
 interface RootLayoutProps {
   children: React.ReactNode
 }
@@ -43,7 +47,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={cn(
           'font-sans antialiased',
           GeistSans.variable,
-          GeistMono.variable
+          GeistMono.variable,
+          inter.variable
         )}
       >
         <Toaster />

@@ -1,116 +1,69 @@
 import * as React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
-
-import { cn } from '@/lib/utils'
-import { auth } from '@/auth'
-import { clearChats } from '@/app/actions/chat'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Sidebar } from '@/components/sidebar'
-import { SidebarList } from '@/components/sidebar-list'
-import {
-  IconApp,
-  IconArrowDown,
-  IconChevronUpDown,
-  IconGitHub,
-  IconNextChat,
-  IconSeparator,
-  IconVercel
-} from '@/components/ui/icons'
-import { SidebarFooter } from '@/components/sidebar-footer'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { ClearHistory } from '@/components/clear-history'
-import { UserMenu } from '@/components/user-menu'
-import { SidebarMobile } from './sidebar-mobile'
+import { getSession } from '@/app/actions/session'
+import { Button } from './ui/button'
+import { Sidebar } from './sidebar'
 import { SidebarToggle } from './sidebar-toggle'
-import { ChatHistory } from './chat-history'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { getSession, logout } from '@/app/actions/session'
+import { IconSeparator } from './ui/icons'
+import { UserMenu } from './user-menu'
 
-async function UserOrLogin() {
+async function UserInfo() {
   const session = await getSession()
 
+  if (!session?.user) {
+    return (
+      <Button variant="link" asChild>
+        <Link href="/sign-in?callbackUrl=/">Login</Link>
+      </Button>
+    )
+  }
+
   return (
-    <>
-      {session?.user ? (
-        <>
-          <SidebarMobile>
-            <ChatHistory userId={session.user.id} />
-          </SidebarMobile>
-          <SidebarToggle />
-        </>
-      ) : (
-        <Link href="/" target="_blank" rel="nofollow">
-          <IconApp className="w-6 h-6 mr-2 dark:fill-white" />
-        </Link>
+    <div className="flex items-center space-x-3">
+      <p className="text-sm text-white">
+        Welcome <span className="font-semibold">{session.user.name}</span>, You
+        have been logged for{' '}
+        <span className="font-semibold">
+          {session.user.additional_info?.location_name}
+        </span>
+      </p>
+      {session.user.image && (
+        <Image
+          src={session.user.image}
+          alt={session.user.name}
+          width={36}
+          height={36}
+          className="rounded-full border"
+        />
       )}
-      <div className="flex items-center">
-        <IconSeparator className="w-6 h-6 text-muted-foreground/50" />
-        {session?.user ? (
-          <UserMenu user={session.user}/>
-        ) : (
-          <Button variant="link" asChild className="-ml-2">
-            <Link href="/sign-in?callbackUrl=/">Login</Link>
-          </Button>
-        )}
-      </div>
-    </>
+
+      <IconSeparator className="size-6 text-muted-foreground/50" />
+      {session?.user ? (
+        <UserMenu user={session.user} />
+      ) : (
+        <Button variant="link" asChild className="-ml-2">
+          <Link href="/sign-in?callbackUrl=/">Login</Link>
+        </Button>
+      )}
+    </div>
   )
 }
 
 export function Header() {
-
   return (
-    <header className="bg-[#131533] text-white sticky top-0 z-50 flex items-center justify-between lg:justify-normal w-full h-16 px-4 border-b shrink-0 backdrop-blur-xl">
-      <div className="flex items-center lg:w-[250px] xl:w-[300px]">
-        <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-          <UserOrLogin />
-        </React.Suspense>
-      </div>
-      <div className="flex items-center justify-end space-x-2">
+    <header className="bg-[#2A3B4B] text-white sticky top-0 z-50 flex items-center justify-between w-full h-16 backdrop-blur-xl">
+      <div className="flex gap-2 min-w-[250px] lg:min-w-[300px] bg-[#33485C] h-full items-center justify-between px-3">
+        <div className="flex items-center space-x-1 justify-center grow">
+          <span className="text-lg font-light">GiveCentral</span>
+          <span className="text-lg font-bold">Guru AI</span>
+        </div>
 
-        {/* <a
-          target="_blank"
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
-          rel="noopener noreferrer"
-          className={cn(buttonVariants({ variant: 'outline' }))}
-        >
-          <IconGitHub />
-          <span className="hidden ml-2 md:flex">GitHub</span>
-        </a> */}
-        {/* <a
-          href="https://github.com/vercel/nextjs-ai-chatbot/"
-          target="_blank"
-          className={cn(buttonVariants())}
-        >
-          <IconVercel className="mr-2" />
-          <span className="hidden sm:block">Deploy to Vercel</span>
-          <span className="sm:hidden">Deploy</span>
-        </a> */}
-      {/* <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" className="pl-0">
-            <span className="pl-4">GPT 4</span> <IconChevronUpDown className='inline'/>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent sideOffset={8} align="start" className="w-[300px]">
-          <DropdownMenuItem className="flex-col items-start gap-2">
-            <div className="text-xs font-medium">GPT 4</div>
-            <div className="text-xs text-zinc-500">For the best answers.</div>
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="flex-col items-start gap-2">
-            <div className="text-xs font-medium">GPT 3.5</div>
-            <div className="text-xs text-zinc-500">Great for system related questions.</div>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu> */}
+        <SidebarToggle />
       </div>
+      <React.Suspense fallback={<div />}>
+        <UserInfo />
+      </React.Suspense>
     </header>
   )
 }

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useVoiceRecording } from '@/lib/hooks/use-voice-recording'
 import { VoiceRecordingButtons } from '@/components/voice-recording-buttons'
+import { AudioVisualizer } from '@/components/audio-visualizer'
 
 interface QueryInputProps {
   onSubmit: (value: string) => void
@@ -57,18 +58,21 @@ export function QueryInput({ onSubmit }: QueryInputProps) {
         onSubmit={handleSubmit}
         className="flex items-center w-full p-4 rounded-full border bg-white shadow-sm overflow-hidden"
       >
-        <Input
-          value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
-          placeholder={
-            isTranscribing
-              ? 'Transcribing...'
-              : isRecording
-                ? 'Listening...'
-                : 'Ask me anything or choose a topic from below to start the conversation'
-          }
-          className="flex-1 focus-visible:ring-0 focus-visible:ring-offset-0 px-4 text-black outline-none border-none shadow-none"
-        />
+        <div className="flex-1 relative">
+          <AudioVisualizer isActive={isRecording} isPaused={isTranscribing} />
+          <Input
+            value={inputValue}
+            onChange={e => setInputValue(e.target.value)}
+            placeholder={
+              isTranscribing
+                ? 'Transcribing...'
+                : isRecording
+                  ? 'Listening...'
+                  : 'Ask me anything or choose a topic from below to start the conversation'
+            }
+            className="w-full focus-visible:ring-0 focus-visible:ring-offset-0 px-4 text-black outline-none border-none shadow-none relative z-10 bg-transparent"
+          />
+        </div>
         <div className="flex items-center gap-2">
           <VoiceRecordingButtons
             isRecording={isRecording}

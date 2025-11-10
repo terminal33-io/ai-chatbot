@@ -4,7 +4,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
-import { IconMicrophone, IconClose, IconCheck } from '@/components/ui/icons'
+import { IconMicrophone, IconClose, IconCheck, IconSpinner } from '@/components/ui/icons'
 
 interface VoiceRecordingButtonsProps {
   isRecording: boolean
@@ -54,7 +54,7 @@ export function VoiceRecordingButtons({
               disabled={isTranscribing}
               className="text-muted-foreground"
             >
-              <IconCheck />
+              {isTranscribing ? <IconSpinner /> : <IconCheck />}
               <span className="sr-only">Confirm</span>
             </Button>
           </TooltipTrigger>

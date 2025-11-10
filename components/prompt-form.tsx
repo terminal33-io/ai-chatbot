@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/tooltip'
 import { IconArrowElbow } from '@/components/ui/icons'
 import { VoiceRecordingButtons } from '@/components/voice-recording-buttons'
+import { AudioVisualizer } from '@/components/audio-visualizer'
 
 export interface PromptProps
   extends Pick<UseChatHelpers, 'input' | 'setInput'> {
@@ -69,7 +70,7 @@ export function PromptForm({
       }}
       ref={formRef}
     >
-      <div className="relative flex flex-col w-full overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border">
+      <div className="relative flex w-full overflow-hidden max-h-60 grow bg-background sm:rounded-md sm:border">
         {/* <Tooltip>
           <TooltipTrigger asChild>
             <button
@@ -89,7 +90,8 @@ export function PromptForm({
           </TooltipTrigger>
           <TooltipContent>New Chat</TooltipContent>
         </Tooltip> */}
-        <div className="relative w-full">
+        <div className="relative flex-1">
+          <AudioVisualizer isActive={isRecording} isPaused={isTranscribing} />
           <Textarea
             ref={inputRef}
             tabIndex={0}
@@ -105,10 +107,10 @@ export function PromptForm({
                   : 'Send a message.'
             }
             spellCheck={false}
-            className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
+            className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm relative z-10"
           />
         </div>
-        <div className="absolute right-0 top-4 flex gap-2 sm:right-4">
+        <div className="flex items-center gap-2 pr-2">
           <VoiceRecordingButtons
             isRecording={isRecording}
             isTranscribing={isTranscribing}

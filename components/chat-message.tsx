@@ -13,11 +13,13 @@ import Image from 'next/image'
 
 export interface ChatMessageProps {
   message: Message
+  chatId?: string
   isGenerating?: boolean
 }
 
 export function ChatMessage({
   message,
+  chatId,
   isGenerating = false,
   ...props
 }: ChatMessageProps) {
@@ -163,6 +165,7 @@ export function ChatMessage({
           </div>
           <ChatMessageActions
             message={message}
+            chatId={chatId}
             showOnHover={isUser}
             alignLeft={!isUser}
             hideForBotWhenGenerating={!isUser && isGenerating}

@@ -77,6 +77,7 @@ export function ChatList({ messages, isLoading, append, id }: ChatList) {
             <div key={index} className={isEvenIndex ? 'mb-8' : ''}>
               <ChatMessage
                 message={message}
+                chatId={id}
                 isGenerating={isCurrentlyGenerating}
               />
             </div>

@@ -4,7 +4,7 @@ import { type Message } from 'ai'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { IconCheck, IconCopy, IconThumbsDown } from '@/components/ui/icons'
+import { IconCheck, IconCopy, IconThumbsDown, IconSpinner } from '@/components/ui/icons'
 import { useCopyToClipboard } from '@/lib/hooks/use-copy-to-clipboard'
 import { cn } from '@/lib/utils'
 import {
@@ -40,6 +40,7 @@ export function ChatMessageActions({
   const [feedbackOpen, setFeedbackOpen] = useState(false)
   const [feedback, setFeedback] = useState('')
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const onCopy = () => {
     if (isCopied) return
@@ -47,22 +48,27 @@ export function ChatMessageActions({
   }
 
   const handleFeedbackSubmit = async () => {
-    const result = await submitFeedback({
-      chatId,
-      messageId: message.id,
-      feedback
-    })
+    setIsSubmitting(true)
+    try {
+      const result = await submitFeedback({
+        chatId,
+        messageId: message.id,
+        feedback
+      })
 
-    if (result.success) {
-      setFeedbackSubmitted(true)
-      setTimeout(() => {
-        setFeedbackOpen(false)
-        setFeedback('')
-        setFeedbackSubmitted(false)
-      }, 1500)
-    } else {
-      console.error('Failed to submit feedback:', result.error)
-      // Optionally show error to user
+      if (result.success) {
+        setFeedbackSubmitted(true)
+        setTimeout(() => {
+          setFeedbackOpen(false)
+          setFeedback('')
+          setFeedbackSubmitted(false)
+        }, 1500)
+      } else {
+        console.error('Failed to submit feedback:', result.error)
+        // Optionally show error to user
+      }
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -139,9 +145,16 @@ export function ChatMessageActions({
                   </Button>
                   <Button
                     onClick={handleFeedbackSubmit}
-                    disabled={!feedback.trim()}
+                    disabled={!feedback.trim() || isSubmitting}
                   >
-                    Submit Feedback
+                    {isSubmitting ? (
+                      <>
+                        <IconSpinner className="mr-2 size-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      'Submit Feedback'
+                    )}
                   </Button>
                 </>
               )}

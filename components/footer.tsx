@@ -12,7 +12,8 @@ export function FooterText({ className, ...props }: React.ComponentProps<'p'>) {
       )}
       {...props}
     >
-      GC Guru - Your Gen AI companion!
+      GC Guru tries its best to guide you, but it can still make mistakes.
+      Always double-check important details.
     </p>
   )
 }

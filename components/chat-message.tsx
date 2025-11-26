@@ -4,12 +4,15 @@
 import { Message } from 'ai'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
+import rehypeRaw from 'rehype-raw'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from '@/components/ui/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import { IconOpenAI } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
+import { ToolProcessing } from '@/components/tool-processing'
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 export interface ChatMessageProps {
   message: Message
@@ -24,6 +27,35 @@ export function ChatMessage({
   ...props
 }: ChatMessageProps) {
   const isUser = message.role === 'user'
+
+  // Parse tool completion states - each tool is complete when content appears after its closing tag
+  const toolStates = useMemo(() => {
+    const toolRegex = /<tool>(.*?)<\/tool>/g
+    const tools: Array<{ name: string; isComplete: boolean; position: number }> = []
+    let match
+    let toolCounter: Record<string, number> = {}
+
+    while ((match = toolRegex.exec(message.content)) !== null) {
+      const toolName = match[1] || 'tool'
+      const toolEndIndex = match.index + match[0].length
+      
+      // Track position of this tool name (for handling duplicate tool names)
+      toolCounter[toolName] = (toolCounter[toolName] || 0) + 1
+      const position = toolCounter[toolName]
+      
+      // Check if there's any content (including other tools) after this tool's closing tag
+      const contentAfter = message.content.slice(toolEndIndex).trim()
+      const hasContentAfter = contentAfter.length > 0
+      
+      tools.push({
+        name: toolName,
+        isComplete: hasContentAfter,
+        position: position
+      })
+    }
+
+    return tools
+  }, [message.content])
 
   return (
     <>
@@ -71,8 +103,37 @@ export function ChatMessage({
                   : 'dark:prose-invert prose-p:text-foreground'
               )}
               remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeRaw as any]}
               linkTarget="_blank"
               components={{
+                // @ts-ignore - Custom HTML element for dynamic component rendering
+                tool: (() => {
+                  // Track which occurrence of each tool name we're rendering
+                  const toolOccurrences: Record<string, number> = {}
+                  
+                  const ToolRenderer = ({ children, ...props }: any) => {
+                    const toolName = String(children)
+                    
+                    // Increment occurrence counter for this tool name
+                    toolOccurrences[toolName] = (toolOccurrences[toolName] || 0) + 1
+                    const currentPosition = toolOccurrences[toolName]
+                    
+                    // Find this specific tool's completion state by name and position
+                    const toolState = toolStates.find(
+                      t => t.name === toolName && t.position === currentPosition
+                    )
+                    const isComplete = toolState?.isComplete ?? false
+                    
+                    return (
+                      <ToolProcessing
+                        toolName={toolName}
+                        isComplete={isComplete}
+                      />
+                    )
+                  }
+                  
+                  return ToolRenderer
+                })() as any,
                 p({ children }) {
                   return (
                     <p

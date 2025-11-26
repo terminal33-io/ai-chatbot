@@ -10,6 +10,14 @@ export default async function Jwt() {
     location_name: 'Fort Worth Advancement Foundation'
   }
 
+  // const payload: JwtPayload = {
+  //   username: 'GLOBALUSER65283B2D8C8D7',
+  //   name: 'GiveCentral Support',
+  //   email: 'admin@givecentral.org',
+  //   location_id: 2,
+  //   location_name: 'Fort Worth Advancement Foundation'
+  // }
+
   const secretKey = process.env.JWT_SECRET as string
   const token = await new jose.SignJWT(payload) // details to  encode in the token
     .setProtectedHeader({

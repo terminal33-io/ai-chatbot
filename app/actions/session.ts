@@ -1,27 +1,50 @@
 'use server'
 
-import { getIronSession, IronSession, SessionOptions } from 'iron-session'
+import { getIronSession } from 'iron-session'
 import { cookies } from 'next/dist/client/components/headers'
-import { redirect } from 'next/navigation'
 import * as jose from 'jose'
 import { sessionOptions } from '@/lib/utils'
-import { JwtPayload, NewUser, SessionData, User } from '@/lib/types'
+import { JwtPayload, NewUser, SessionData } from '@/lib/types'
 import { createUser, getUser } from './user'
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
-export async function getSession() {
-  const session = await getIronSession<SessionData>(cookies(), sessionOptions)
-  if (!session.user) return null
-  return session
+
+export async function verifyToken(token: string): Promise<JwtPayload> {
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
+    const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
+    return payload
+  } catch (err) {
+    console.error('[verifyToken] Error:', err)
+    throw new Error('Invalid or expired token')
+  }
 }
 
-export async function login(token: string, qid: number | null = null) {
-  const secret = new TextEncoder().encode(process.env.JWT_SECRET)
-  try {
-    //validate token
-    const { payload } = await jose.jwtVerify<JwtPayload>(token, secret)
 
-    // console.log(payload)
+export async function checkLoginConflict(newUser: any) {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+  const currentUser = session.user
+
+  if (!currentUser) return null
+
+  const isSameUser = currentUser.username === newUser.username
+
+  if (!isSameUser) {
+    return {
+      hasConflict: true,
+      existingUser: currentUser,
+      newUser
+    }
+  }
+
+  return null
+}
+
+
+export async function login(token: string, qid: number | null = null) {
+  try {
+    const payload = await verifyToken(token)
 
     let userData: NewUser = {
       username: payload.username,
@@ -35,61 +58,48 @@ export async function login(token: string, qid: number | null = null) {
         location_name: payload.location_name
       }
     }
-    // get user
-    let user = await getUser(payload.username)
 
-    // console.log(user)
+    let user = await getUser(payload.username)
     if (!user) {
       user = await createUser(userData)
     }
+    if (!user) throw new Error('User not found')
 
-    if (user) {
-      // generate access token
-      const response = await fetch(
-        `${process.env.API_URL}/auth/generate-token`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            SECRET: process.env.APP_SECRET || ''
-          },
-          body: JSON.stringify(user),
-          cache: 'no-store'
-        }
-      )
+    const conflict = await checkLoginConflict(user)
+    if (conflict) return { conflict }
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
+    const response = await fetch(`${process.env.API_URL}/auth/generate-token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        SECRET: process.env.APP_SECRET || ''
+      },
+      body: JSON.stringify(user),
+      cache: 'no-store'
+    })
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
 
-      const { data } = await response.json()
-      // create new session
-      const session = await getIronSession<SessionData>(
-        cookies(),
-        sessionOptions
-      )
-      session.isLoggedIn = true
-      session.accessToken = data.token
-      session.user = user
-      await session.save()
-    } else throw new Error('User not found')
+    const { data } = await response.json()
+
+    const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+    session.isLoggedIn = true
+    session.accessToken = data.token
+    session.user = user
+    await session.save()
+
+    return { success: true }
   } catch (e) {
-    console.log(e)
-    let errorMessage: string
-    if (e instanceof Error) {
-      errorMessage = e.message
-    } else {
-      errorMessage = 'An unknown error occurred'
-    }
-    revalidatePath('/sso')
-    return { error: errorMessage }
+    console.error('[loginUser] Error:', e)
+    return { error: e instanceof Error ? e.message : 'An unknown error occurred' }
   }
-  let redirectPath = '/'
-  if (qid) {
-    redirectPath = `${redirectPath}?qid=${qid}`
-  }
-  redirect(redirectPath)
 }
+
+
+export async function getSession() {
+  const session = await getIronSession<SessionData>(cookies(), sessionOptions)
+  return session.user ? session : null
+}
+
 
 export async function logout() {
   const session = await getIronSession<SessionData>(cookies(), sessionOptions)
